@@ -20,12 +20,14 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.load" ]]; then
-  kpackagetool5 --type Plasma/Applet --upgrade "$root/widgets/org.orbital.load"
-else
-  kpackagetool5 --type Plasma/Applet --install "$root/widgets/org.orbital.load"
-fi
-[[ -f "$HOME/.local/share/plasma/plasmoids/org.orbital.load/contents/ui/main.qml" ]]
+for widget in org.orbital.cpu org.orbital.memory; do
+  if [[ -d "$HOME/.local/share/plasma/plasmoids/$widget" ]]; then
+    kpackagetool5 --type Plasma/Applet --upgrade "$root/widgets/$widget"
+  else
+    kpackagetool5 --type Plasma/Applet --install "$root/widgets/$widget"
+  fi
+  [[ -f "$HOME/.local/share/plasma/plasmoids/$widget/contents/ui/main.qml" ]]
+done
 
 mkdir -p "$HOME/.local/share/color-schemes" "$HOME/.local/share/konsole" \
   "$HOME/.local/share/wallpapers/Orbital" "$HOME/.oh-my-zsh/custom/themes"
@@ -33,7 +35,7 @@ cp "$root/assets/kde/Orbital.colors" "$HOME/.local/share/color-schemes/Orbital.c
 cp "$root/assets/konsole/Orbital.colorscheme" "$HOME/.local/share/konsole/Orbital.colorscheme"
 cp "$root/assets/konsole/Orbital.profile" "$HOME/.local/share/konsole/Orbital.profile"
 cp "$root/assets/zsh/Orbital.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/Orbital.zsh-theme"
-cp "$root"/assets/wallpaper/*.png "$HOME/.local/share/wallpapers/Orbital/"
+cp "$root/assets/wallpaper/orbital-3000x2000.png" "$root/assets/wallpaper/orbital-2560x1440.png" "$HOME/.local/share/wallpapers/Orbital/"
 
 plasma-apply-colorscheme Orbital
 kwriteconfig5 --file "$HOME/.config/kdeglobals" --group Icons --key Theme Tela-circle-blue
@@ -79,8 +81,9 @@ qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$layo
 # Panel opacity and the private system tray are stored outside the scripting API.
 bottom_id="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0])')"
 tray_id="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var t=p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0];t.currentConfigGroup=[];print(t.readConfig("SystrayContainmentId"))')"
-order="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.load","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
-[[ "$bottom_id" =~ ^[0-9]+$ && "$tray_id" =~ ^[0-9]+$ && "$order" =~ ^[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+$ ]]
+order="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.cpu","org.orbital.memory","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
+order_pattern='^[0-9]+(;[0-9]+){7}$'
+[[ "$bottom_id" =~ ^[0-9]+$ && "$tray_id" =~ ^[0-9]+$ && "$order" =~ $order_pattern ]]
 sni_ids="$(qdbus org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | while IFS= read -r item; do
   [[ "$item" == */* ]] || continue
   qdbus "${item%%/*}" "/${item#*/}" org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierItem Id 2>/dev/null || true
@@ -105,6 +108,9 @@ PY
 kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key shownItems "$shown"
 kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key hiddenItems "$hidden"
 kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key showAllItems false
+if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.load" ]]; then
+  kpackagetool5 --type Plasma/Applet --remove org.orbital.load
+fi
 systemctl --user start plasma-plasmashell.service
 trap - ERR
 echo "Orbital applied. Restore with: $root/scripts/restore-user.sh $backup"

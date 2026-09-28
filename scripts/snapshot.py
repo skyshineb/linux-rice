@@ -24,6 +24,8 @@ PATHS = [
     ".oh-my-zsh/custom/themes/Orbital.zsh-theme",
     ".local/share/wallpapers/Orbital",
     ".local/share/plasma/plasmoids/org.orbital.load",
+    ".local/share/plasma/plasmoids/org.orbital.cpu",
+    ".local/share/plasma/plasmoids/org.orbital.memory",
 ]
 
 

@@ -29,9 +29,10 @@ bottom.maximumLength = width;
 bottom.length = width;
 
 bottom.addWidget("org.kde.plasma.panelspacer");
-var load = bottom.addWidget("org.orbital.load");
-if (!load || load.type !== "org.orbital.load") {
-    throw new Error("Orbital Load widget was not available");
+var cpu = bottom.addWidget("org.orbital.cpu");
+var memory = bottom.addWidget("org.orbital.memory");
+if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory") {
+    throw new Error("Orbital CPU or Memory widget was not available");
 }
 var tray = bottom.addWidget("org.kde.plasma.systemtray");
 var clock = bottom.addWidget("org.kde.plasma.digitalclock");
@@ -51,4 +52,4 @@ for (var d = 0; d < ds.length; ++d) {
     desktop.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
     desktop.writeConfig("Image", wallpaperRoot + "/" + image);
 }
-print("Orbital single panel applied: bottom=" + bottom.id + ", load=" + load.id + ", tray=" + tray.id);
+print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", tray=" + tray.id);

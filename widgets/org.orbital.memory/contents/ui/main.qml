@@ -6,28 +6,20 @@ import org.kde.plasma.plasmoid 2.0
 import org.kde.ksysguard.sensors 1.0 as Sensors
 
 Item {
-    id: root
-    Plasmoid.title: "Orbital Load"
+    Plasmoid.title: "Orbital Memory"
     Plasmoid.icon: "utilities-system-monitor"
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.toolTipMainText: "Orbital Load"
-    Plasmoid.toolTipSubText: "CPU " + (cpuSensor.status === Sensors.Sensor.Ready ? Math.round(cpuSensor.value) + "%" : "—")
-        + "  ·  RAM " + (ramSensor.status === Sensors.Sensor.Ready ? Math.round(ramSensor.value) + "%" : "—")
+    Plasmoid.toolTipMainText: "Orbital Memory"
+    Plasmoid.toolTipSubText: "RAM " + (memorySensor.status === Sensors.Sensor.Ready ? Math.round(memorySensor.value) + "%" : "—")
         + "  ·  Open System Monitor"
 
     Sensors.Sensor {
-        id: cpuSensor
-        sensorId: "cpu/all/usage"
-        updateRateLimit: 1000
-    }
-    Sensors.Sensor {
-        id: ramSensor
+        id: memorySensor
         sensorId: "memory/physical/usedPercent"
         updateRateLimit: 1000
     }
 
-    // Plasma 5's executable engine keeps the app alive until it exits.
     PlasmaCore.DataSource {
         id: applicationLauncher
         engine: "executable"
@@ -39,21 +31,19 @@ Item {
         id: compact
         readonly property real padding: Math.max(4, Math.round(height * 0.08))
         readonly property real visualHeight: height > 0 ? Math.max(24, height - 2 * padding) : 44
-        readonly property real visualWidth: visualHeight * 100 / 44
+        readonly property real slotWidth: visualHeight * 50 / 44
 
-        Layout.minimumWidth: visualWidth
-        Layout.preferredWidth: visualWidth
-        Layout.maximumWidth: visualWidth
+        Layout.minimumWidth: slotWidth
+        Layout.preferredWidth: slotWidth
+        Layout.maximumWidth: slotWidth
         Layout.minimumHeight: 40
         Layout.fillHeight: true
 
-        LoadVisual {
+        MemoryVisual {
             anchors.centerIn: parent
-            width: compact.visualWidth
+            width: compact.visualHeight
             height: compact.visualHeight
-            cpuPercent: cpuSensor.status === Sensors.Sensor.Ready ? Number(cpuSensor.value) : NaN
-            ramPercent: ramSensor.status === Sensors.Sensor.Ready ? Number(ramSensor.value) : NaN
-            animationsEnabled: PlasmaCore.Units.longDuration > 0
+            ramPercent: memorySensor.status === Sensors.Sensor.Ready ? Number(memorySensor.value) : NaN
         }
 
         MouseArea {
