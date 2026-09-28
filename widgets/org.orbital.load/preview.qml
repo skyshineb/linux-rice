@@ -2,20 +2,24 @@ import QtQuick 2.15
 import "contents/ui"
 
 Rectangle {
-    width: 200
-    height: 200
+    width: 300
+    height: 280
     color: "#101D2B"
 
     Column {
         anchors.centerIn: parent
         spacing: 8
         Repeater {
-            model: [0, 50, 100]
+            model: [
+                { "height": 44, "percent": 0 },
+                { "height": 72, "percent": 50 },
+                { "height": 96, "percent": 100 }
+            ]
             LoadVisual {
-                width: 100
-                height: 48
-                cpuPercent: modelData
-                ramPercent: modelData
+                width: height * 100 / 44
+                height: modelData.height
+                cpuPercent: modelData.percent
+                ramPercent: modelData.percent
                 animationsEnabled: false
             }
         }

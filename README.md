@@ -15,6 +15,8 @@ sudo ./scripts/apply-sddm.sh
 
 `apply-user.sh` requires the active Plasma session. It saves a dated snapshot under `backups/` before changing user files and prints the exact restore command. The SDDM step copies a system-readable wallpaper, overrides the current Kubuntu login theme, and creates a separate root backup in `/var/backups/orbital-sddm/`.
 
+Reapplying the user theme preserves the bottom panel's current height; Orbital Load resizes with it.
+
 ## Restore
 
 ```bash
@@ -30,7 +32,7 @@ Sign out and back in after restoring to refresh all running applications. Backup
 - `assets/wallpaper/`: original 3000×2000 and 2560×1440 SVG/PNG wallpapers.
 - `assets/kde/Orbital.colors`: KDE color palette based on Breeze Dark.
 - `assets/konsole/` and `assets/zsh/`: terminal colors, IBM Plex Mono profile and single-line prompt.
-- `widgets/org.orbital.load/`: custom compact CPU orbit and 2×5 RAM indicator. Click it to open Plasma System Monitor.
+- `widgets/org.orbital.load/`: custom CPU orbit and 2×5 RAM indicator that scales with panel height. Click it to open Plasma System Monitor.
 - `scripts/plasma-layout.js`: preserves the existing launcher, pager and pinned task manager, moves the tray and clock to the bottom, and removes the old top panel.
 
 The SDDM override is applied only by the `sudo` command. The user theme, including the lock screen, can be applied separately.

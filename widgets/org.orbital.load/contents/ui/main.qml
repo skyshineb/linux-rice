@@ -36,14 +36,21 @@ Item {
     }
 
     Plasmoid.compactRepresentation: Item {
-        Layout.minimumWidth: 100
-        Layout.preferredWidth: 100
-        Layout.maximumWidth: 100
-        Layout.minimumHeight: 44
-        Layout.preferredHeight: 44
+        id: compact
+        readonly property real padding: Math.max(4, Math.round(height * 0.08))
+        readonly property real visualHeight: height > 0 ? Math.max(24, height - 2 * padding) : 44
+        readonly property real visualWidth: visualHeight * 100 / 44
+
+        Layout.minimumWidth: visualWidth
+        Layout.preferredWidth: visualWidth
+        Layout.maximumWidth: visualWidth
+        Layout.minimumHeight: 40
+        Layout.fillHeight: true
 
         LoadVisual {
             anchors.centerIn: parent
+            width: compact.visualWidth
+            height: compact.visualHeight
             cpuPercent: cpuSensor.status === Sensors.Sensor.Ready ? Number(cpuSensor.value) : NaN
             ramPercent: ramSensor.status === Sensors.Sensor.Ready ? Number(ramSensor.value) : NaN
             animationsEnabled: PlasmaCore.Units.longDuration > 0

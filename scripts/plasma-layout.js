@@ -21,7 +21,6 @@ for (var i = 0; i < existing.length; ++i) {
 }
 bottom.location = "bottom";
 bottom.hiding = "none";
-bottom.height = 70;
 bottom.alignment = "left";
 bottom.offset = 0;
 var width = screenGeometry(bottom.screen).width;
