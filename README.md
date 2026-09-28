@@ -1,6 +1,6 @@
 # Orbital KDE rice
 
-A restrained mission-control look for this Ubuntu 24.04 / Plasma 5.27 X11 system: dark navy surfaces, muted cyan and amber accents, original orbital wallpaper, full-width top telemetry and bottom app panels, IBM Plex typography, and Tela Circle Blue icons. It uses no NASA branding or copyrighted mission imagery.
+A restrained mission-control look for this Ubuntu 24.04 / Plasma 5.27 X11 system: dark navy surfaces, muted cyan and amber accents, original orbital wallpaper, one full-width bottom panel, IBM Plex typography, and Tela Circle Blue icons. It uses no NASA branding or copyrighted mission imagery.
 
 ## Apply
 
@@ -30,6 +30,7 @@ Sign out and back in after restoring to refresh all running applications. Backup
 - `assets/wallpaper/`: original 3000×2000 and 2560×1440 SVG/PNG wallpapers.
 - `assets/kde/Orbital.colors`: KDE color palette based on Breeze Dark.
 - `assets/konsole/` and `assets/zsh/`: terminal colors, IBM Plex Mono profile and single-line prompt.
-- `scripts/plasma-layout.js`: preserves existing launcher, pager and pinned task manager while adding the top status panel.
+- `widgets/org.orbital.load/`: custom compact CPU orbit and 2×5 RAM indicator. Click it to open Plasma System Monitor.
+- `scripts/plasma-layout.js`: preserves the existing launcher, pager and pinned task manager, moves the tray and clock to the bottom, and removes the old top panel.
 
 The SDDM override is applied only by the `sudo` command. The user theme, including the lock screen, can be applied separately.

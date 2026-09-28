@@ -1,0 +1,13 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "org.orbital.load",
+    "Name": "Orbital Load",
+    "Description": "Compact orbital CPU and memory indicator",
+    "Category": "System Information",
+    "Icon": "utilities-system-monitor",
+    "Version": "1.0"
+  },
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-MainScript": "ui/main.qml"
+}

@@ -13,6 +13,20 @@ fi
 
 backup="$(python3 "$root/scripts/snapshot.py" save)"
 echo "Snapshot: $backup"
+restore_on_error() {
+  trap - ERR
+  echo "Apply failed; restoring $backup" >&2
+  "$root/scripts/restore-user.sh" "$backup" >&2
+}
+trap restore_on_error ERR
+
+if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.load" ]]; then
+  kpackagetool5 --type Plasma/Applet --upgrade "$root/widgets/org.orbital.load"
+else
+  kpackagetool5 --type Plasma/Applet --install "$root/widgets/org.orbital.load"
+fi
+[[ -f "$HOME/.local/share/plasma/plasmoids/org.orbital.load/contents/ui/main.qml" ]]
+
 mkdir -p "$HOME/.local/share/color-schemes" "$HOME/.local/share/konsole" \
   "$HOME/.local/share/wallpapers/Orbital" "$HOME/.oh-my-zsh/custom/themes"
 cp "$root/assets/kde/Orbital.colors" "$HOME/.local/share/color-schemes/Orbital.colors"
@@ -62,12 +76,35 @@ PY
 layout="$(sed "s|HOME_PLACEHOLDER|$HOME|g" "$root/scripts/plasma-layout.js")"
 qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$layout"
 
-# Panel opacity is stored in plasmashellrc outside the Plasma scripting API.
+# Panel opacity and the private system tray are stored outside the scripting API.
 bottom_id="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0])')"
-top_id="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print(panelIds.filter(function(id){return panelById(id).location === "top"})[0])')"
-for id in "$bottom_id" "$top_id"; do
-  kwriteconfig5 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "Panel $id" --key panelOpacity 1
-  kwriteconfig5 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "Panel $id" --key floating 0
-done
-systemctl --user restart plasma-plasmashell.service
+tray_id="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var t=p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0];t.currentConfigGroup=[];print(t.readConfig("SystrayContainmentId"))')"
+order="$(qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.load","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
+[[ "$bottom_id" =~ ^[0-9]+$ && "$tray_id" =~ ^[0-9]+$ && "$order" =~ ^[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+\;[0-9]+$ ]]
+sni_ids="$(qdbus org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | while IFS= read -r item; do
+  [[ "$item" == */* ]] || continue
+  qdbus "${item%%/*}" "/${item#*/}" org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierItem Id 2>/dev/null || true
+done | paste -sd, -)"
+
+systemctl --user stop plasma-plasmashell.service
+kwriteconfig5 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "Panel $bottom_id" --key panelOpacity 1
+kwriteconfig5 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "Panel $bottom_id" --key floating 0
+kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$bottom_id" --group General --key AppletOrder "$order"
+shown='org.kde.plasma.battery,org.kde.plasma.networkmanagement,org.kde.plasma.volume'
+known="$(kreadconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key knownItems)"
+hidden="$(python3 - "$known" "$shown" "$sni_ids" <<'PY'
+import re
+import sys
+known = [item for item in sys.argv[1].split(',') if item]
+shown = set(sys.argv[2].split(','))
+app_ids = [re.sub(r'^dropbox-client-\d+$', 'dropbox-client-PID', item)
+           for item in sys.argv[3].split(',') if item]
+print(','.join(dict.fromkeys([item for item in known if item not in shown] + app_ids)))
+PY
+)"
+kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key shownItems "$shown"
+kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key hiddenItems "$hidden"
+kwriteconfig5 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key showAllItems false
+systemctl --user start plasma-plasmashell.service
+trap - ERR
 echo "Orbital applied. Restore with: $root/scripts/restore-user.sh $backup"

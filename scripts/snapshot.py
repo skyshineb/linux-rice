@@ -23,6 +23,7 @@ PATHS = [
     ".local/share/konsole/Orbital.profile",
     ".oh-my-zsh/custom/themes/Orbital.zsh-theme",
     ".local/share/wallpapers/Orbital",
+    ".local/share/plasma/plasmoids/org.orbital.load",
 ]
 
 
