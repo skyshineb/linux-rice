@@ -13,6 +13,20 @@ if (top) {
 }
 
 var existing = bottom.widgets();
+var savedMaxRpm = null;
+for (var i = 0; i < existing.length; ++i) {
+    if (existing[i].type === "org.orbital.cpu") {
+        existing[i].currentConfigGroup = ["General"];
+        var rawMaxRpm = existing[i].readConfig("maxRpm");
+        if (rawMaxRpm !== undefined && rawMaxRpm !== null && String(rawMaxRpm) !== "") {
+            var parsedMaxRpm = Number(rawMaxRpm);
+            if (isFinite(parsedMaxRpm)) {
+                savedMaxRpm = Math.round(Math.max(0, Math.min(120, parsedMaxRpm)));
+            }
+        }
+        break;
+    }
+}
 var keep = {"org.kde.plasma.kickoff": true,
             "org.kde.plasma.pager": true,
             "org.kde.plasma.icontasks": true};
@@ -33,6 +47,10 @@ var cpu = bottom.addWidget("org.orbital.cpu");
 var memory = bottom.addWidget("org.orbital.memory");
 if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory") {
     throw new Error("Orbital CPU or Memory widget was not available");
+}
+if (savedMaxRpm !== null) {
+    cpu.currentConfigGroup = ["General"];
+    cpu.writeConfig("maxRpm", savedMaxRpm);
 }
 var tray = bottom.addWidget("org.kde.plasma.systemtray");
 var clock = bottom.addWidget("org.kde.plasma.digitalclock");

@@ -17,6 +17,8 @@ sudo ./scripts/apply-sddm.sh
 
 Reapplying the user theme preserves the bottom panel's current height; both indicators resize with it.
 
+To adjust the CPU orbit, right-click Orbital CPU and open its settings. Set the maximum speed at 100% CPU from 0 to 120 RPM (30 by default). Orbit speed follows CPU usage linearly, and 0% CPU stops the orbit. Reapplying the user theme keeps the chosen speed.
+
 ## Restore
 
 ```bash

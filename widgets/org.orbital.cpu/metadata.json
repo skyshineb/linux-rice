@@ -6,7 +6,7 @@
     "Description": "Scalable orbital CPU indicator",
     "Category": "System Information",
     "Icon": "utilities-system-monitor",
-    "Version": "1.0"
+    "Version": "1.1"
   },
   "X-Plasma-API": "declarativeappletscript",
   "X-Plasma-MainScript": "ui/main.qml"

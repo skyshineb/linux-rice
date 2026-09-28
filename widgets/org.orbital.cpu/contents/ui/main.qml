@@ -44,6 +44,7 @@ Item {
             width: compact.visualHeight
             height: compact.visualHeight
             cpuPercent: cpuSensor.status === Sensors.Sensor.Ready ? Number(cpuSensor.value) : NaN
+            maxRpm: Plasmoid.configuration.maxRpm
             animationsEnabled: PlasmaCore.Units.longDuration > 0
         }
 

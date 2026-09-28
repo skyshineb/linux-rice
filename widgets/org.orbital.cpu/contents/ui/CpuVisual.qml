@@ -7,8 +7,12 @@ Item {
     readonly property real unit: height / 44
 
     property real cpuPercent: NaN
+    property real maxRpm: 30
     property bool animationsEnabled: true
     readonly property bool cpuReady: isFinite(cpuPercent)
+    readonly property real orbitRpm: cpuReady && isFinite(maxRpm)
+        ? Math.max(0, Math.min(120, maxRpm)) * Math.max(0, Math.min(100, cpuPercent)) / 100
+        : 0
 
     // Scale geometry and fonts from the available height, avoiding a stretched texture.
     Item {
@@ -62,18 +66,16 @@ Item {
 
     Timer {
         id: orbitTimer
-        interval: 50
+        interval: 16
         repeat: true
-        running: root.visible && root.cpuReady && root.animationsEnabled
+        running: root.visible && root.animationsEnabled && root.orbitRpm > 0
         property double lastTick: 0
         onRunningChanged: lastTick = Date.now()
         onTriggered: {
             var now = Date.now()
             var elapsed = Math.max(0, Math.min(250, now - lastTick))
             lastTick = now
-            var usage = Math.max(0, Math.min(100, root.cpuPercent))
-            var period = 16000 - 140 * usage
-            orbit.rotation = (orbit.rotation + 360 * elapsed / period) % 360
+            orbit.rotation = (orbit.rotation + 6 * root.orbitRpm * elapsed / 1000) % 360
         }
     }
 }
