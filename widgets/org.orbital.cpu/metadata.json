@@ -3,11 +3,10 @@
   "KPlugin": {
     "Id": "org.orbital.cpu",
     "Name": "Orbital CPU",
-    "Description": "Scalable orbital CPU indicator",
+    "Description": "Scalable CPU indicator with Classic, Constellation and Pulsar orbits",
     "Category": "System Information",
     "Icon": "utilities-system-monitor",
-    "Version": "1.1"
+    "Version": "2.3.0"
   },
-  "X-Plasma-API": "declarativeappletscript",
-  "X-Plasma-MainScript": "ui/main.qml"
+  "X-Plasma-API-Minimum-Version": "6.0"
 }

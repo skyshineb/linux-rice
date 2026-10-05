@@ -1,0 +1,13 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "org.orbital.battery",
+    "Name": "Orbital Battery",
+    "Description": "Grid battery indicator with Plasma power controls",
+    "Category": "System Information",
+    "Icon": "battery",
+    "Version": "2.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-DBusActivationService": "org.kde.Solid.PowerManagement"
+}

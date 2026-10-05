@@ -1,17 +1,21 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Layouts
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.plasmoid 2.0
-import org.kde.ksysguard.sensors 1.0 as Sensors
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.plasmoid
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.ksysguard.sensors as Sensors
+import org.kde.kirigami as Kirigami
 
-Item {
+PlasmoidItem {
     Plasmoid.title: "Orbital CPU"
     Plasmoid.icon: "utilities-system-monitor"
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.toolTipMainText: "Orbital CPU"
-    Plasmoid.toolTipSubText: "CPU " + (cpuSensor.status === Sensors.Sensor.Ready ? Math.round(cpuSensor.value) + "%" : "—")
+    // This gauge is the complete widget; Plasma requires a full representation
+    // before it can select a separate compact representation.
+    preferredRepresentation: fullRepresentation
+    toolTipMainText: "Orbital CPU"
+    toolTipSubText: "CPU " + (cpuSensor.status === Sensors.Sensor.Ready ? Math.round(cpuSensor.value) + "%" : "—")
         + "  ·  Open System Monitor"
 
     Sensors.Sensor {
@@ -20,33 +24,30 @@ Item {
         updateRateLimit: 1000
     }
 
-    PlasmaCore.DataSource {
+    Plasma5Support.DataSource {
         id: applicationLauncher
         engine: "executable"
         connectedSources: []
         onNewData: disconnectSource(sourceName)
     }
 
-    Plasmoid.compactRepresentation: Item {
-        id: compact
-        readonly property real padding: Math.max(4, Math.round(height * 0.08))
-        readonly property real visualHeight: height > 0 ? Math.max(24, height - 2 * padding) : 44
-        readonly property real slotWidth: visualHeight * 50 / 44
+    fullRepresentation: CpuIndicator {
+        id: gauge
 
-        Layout.minimumWidth: slotWidth
-        Layout.preferredWidth: slotWidth
-        Layout.maximumWidth: slotWidth
+        Layout.minimumWidth: implicitWidth
+        Layout.preferredWidth: implicitWidth
+        Layout.maximumWidth: implicitWidth
         Layout.minimumHeight: 40
         Layout.fillHeight: true
 
-        CpuVisual {
-            anchors.centerIn: parent
-            width: compact.visualHeight
-            height: compact.visualHeight
-            cpuPercent: cpuSensor.status === Sensors.Sensor.Ready ? Number(cpuSensor.value) : NaN
-            maxRpm: Plasmoid.configuration.maxRpm
-            animationsEnabled: PlasmaCore.Units.longDuration > 0
-        }
+        cpuPercent: cpuSensor.status === Sensors.Sensor.Ready ? Number(cpuSensor.value) : NaN
+        orbitStyle: Plasmoid.configuration.orbitStyle
+        constellationReadoutPosition: Plasmoid.configuration.constellationReadoutPosition
+        maxRpm: Plasmoid.configuration.maxRpm
+        animationsEnabled: Kirigami.Units.longDuration > 0
+        relativeSize: Plasmoid.configuration.indicatorScale
+        horizontalPadding: Plasmoid.configuration.horizontalPadding
+        verticalPadding: Plasmoid.configuration.verticalPadding
 
         MouseArea {
             anchors.fill: parent

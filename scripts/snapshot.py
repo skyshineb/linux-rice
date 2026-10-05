@@ -26,6 +26,7 @@ PATHS = [
     ".local/share/plasma/plasmoids/org.orbital.load",
     ".local/share/plasma/plasmoids/org.orbital.cpu",
     ".local/share/plasma/plasmoids/org.orbital.memory",
+    ".local/share/plasma/plasmoids/org.orbital.battery",
 ]
 
 

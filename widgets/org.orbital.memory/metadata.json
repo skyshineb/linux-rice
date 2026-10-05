@@ -3,11 +3,10 @@
   "KPlugin": {
     "Id": "org.orbital.memory",
     "Name": "Orbital Memory",
-    "Description": "Scalable physical memory indicator",
+    "Description": "Switchable Fan and Silicon RAM indicator with an optional Fan swap gauge",
     "Category": "System Information",
     "Icon": "utilities-system-monitor",
-    "Version": "1.0"
+    "Version": "3.1.1"
   },
-  "X-Plasma-API": "declarativeappletscript",
-  "X-Plasma-MainScript": "ui/main.qml"
+  "X-Plasma-API-Minimum-Version": "6.0"
 }
