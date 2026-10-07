@@ -6,7 +6,7 @@
     "Description": "Scalable CPU indicator with Classic, Constellation and Pulsar orbits",
     "Category": "System Information",
     "Icon": "utilities-system-monitor",
-    "Version": "2.3.0"
+    "Version": "2.3.1"
   },
   "X-Plasma-API-Minimum-Version": "6.0"
 }
