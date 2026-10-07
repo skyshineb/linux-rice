@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+// SPDX-License-Identifier: MIT
+
 import QtQuick
 import "contents/ui"
 

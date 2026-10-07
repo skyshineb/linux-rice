@@ -6,7 +6,14 @@
     "Description": "Switchable Fan and Silicon RAM indicator with an optional Fan swap gauge",
     "Category": "System Information",
     "Icon": "utilities-system-monitor",
-    "Version": "3.1.1"
+    "Version": "3.1.1",
+    "License": "MIT",
+    "Authors": [
+      {
+        "Name": "Nikolay Skovorodin",
+        "Website": "https://github.com/skyshineb"
+      }
+    ]
   },
   "X-Plasma-API-Minimum-Version": "6.0"
 }

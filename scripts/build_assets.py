@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+# SPDX-License-Identifier: MIT
+
 """Build the Orbital color scheme and two resolution-matched wallpapers."""
 
 from __future__ import annotations
@@ -8,13 +11,20 @@ import os
 import random
 from pathlib import Path
 
-from PyQt5.QtGui import QGuiApplication, QImageReader
+from PyQt6.QtGui import QGuiApplication, QImageReader
 
 
 ROOT = Path(__file__).resolve().parent.parent
 WALLPAPER_DIR = ROOT / "assets" / "wallpaper"
 SCHEME_PATH = ROOT / "assets" / "kde" / "Orbital.colors"
 SOURCE_SCHEME = Path("/usr/share/color-schemes/BreezeDark.colors")
+
+SCHEME_NOTICE = """# SPDX-License-Identifier: GPL-2.0-or-later
+# Derived from KDE Breeze Dark; see THIRD_PARTY.md.
+# Orbital palette: Copyright (c) 2026 Nikolay Skovorodin.
+# Publication notice added 2026-10-07.
+
+"""
 
 COLORS = {
     "canvas": "#0B1420",
@@ -94,7 +104,7 @@ def build_scheme() -> None:
 
     output = StringIO()
     scheme.write(output, space_around_delimiters=False)
-    SCHEME_PATH.write_text(output.getvalue().rstrip() + "\n", encoding="utf-8")
+    SCHEME_PATH.write_text(SCHEME_NOTICE + output.getvalue().rstrip() + "\n", encoding="utf-8")
 
 
 def wallpaper_svg(width: int, height: int) -> str:

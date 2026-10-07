@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+# SPDX-License-Identifier: MIT
+
 set -euo pipefail
 if [[ $EUID -ne 0 ]]; then
   echo 'Run with sudo: sudo ./scripts/restore-sddm.sh [BACKUP_DIR]' >&2

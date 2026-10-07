@@ -3,6 +3,8 @@
     SPDX-FileCopyrightText: 2011 Viranch Mehta <viranch.mehta@gmail.com>
     SPDX-FileCopyrightText: 2013-2015 Kai Uwe Broulik <kde@privat.broulik.de>
     SPDX-FileCopyrightText: 2021-2022 ivan tkachenko <me@ratijas.tk>
+    SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+    Orbital adaptation; publication notice added 2026-10-07.
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 

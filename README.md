@@ -1,55 +1,136 @@
 # Orbital KDE rice
 
-A restrained mission-control look for Plasma 6.6 on Wayland: dark navy surfaces, muted cyan and amber accents, original orbital wallpaper, one full-width bottom panel, IBM Plex typography, and Tela Circle Blue icons. It uses no NASA branding or copyrighted mission imagery.
+A restrained mission-control look for KDE Plasma 6: dark navy surfaces, muted cyan and amber accents, original orbital wallpaper, a full-width bottom panel, IBM Plex typography, and Tela Circle Blue icons.
 
-## Apply
+![Orbital desktop on KDE Plasma](docs/images/desktop.png)
 
-From this directory:
+## Components
+
+| Component | What it provides |
+| --- | --- |
+| [Orbital CPU](widgets/org.orbital.cpu/) | Animated Classic, Constellation and Pulsar orbits, CPU usage, and temperature/frequency tooltips. |
+| [Orbital Memory](widgets/org.orbital.memory/) | Fan and Silicon RAM indicators with an optional Fan swap gauge. |
+| [Orbital Battery](widgets/org.orbital.battery/) | A 20-cell charge grid with brightness, power profiles, and sleep inhibition controls. |
+| [Appearance assets](assets/) | KDE colors, two SVG/PNG wallpapers, Konsole colors/profile, and an Oh My Zsh prompt. |
+| [Installation scripts](scripts/) | Desktop setup, separate widget upgrades, snapshots, restore, and an optional SDDM override. |
+
+The widgets are independent Plasma applet packages. They can be installed without applying the desktop theme.
+
+## Requirements and compatibility
+
+The preparation checks run on Ubuntu 26.04.1 LTS with Plasma and PowerDevil 6.6.6 on Wayland. Other distributions, older Plasma versions, and X11 have not been validated. In particular, the Battery popup uses private PowerDevil QML APIs matching Plasma 6.6.6; its metadata's minimum Plasma API version is not a compatibility guarantee.
+
+For the full user theme, provide:
+
+- An active Plasma session managed by `plasma-plasmashell.service`, with `qdbus6`, `kpackagetool6`, `kwriteconfig6`, `kreadconfig6`, `plasma-apply-colorscheme`, and `systemctl` available.
+- Python 3 and Git; network access is needed only to download Tela Circle Blue when it is not already installed.
+- IBM Plex Sans and IBM Plex Mono fonts, and the Breeze Dark GTK theme. On the checked Ubuntu system, the fonts are supplied by `fonts-ibm-plex`.
+- Oh My Zsh with an existing `~/.zshrc` containing a `ZSH_THEME=` assignment.
+- An existing bottom panel containing Application Launcher (Kickoff), Pager, and Icons-only Task Manager. Their configuration and pinned applications are preserved. Other widgets on that panel are replaced by the Orbital layout; an unrelated top panel is refused.
+
+CPU and Memory require KDE's `org.kde.ksysguard.sensors` QML module (`qml6-module-org-kde-ksysguard` on the checked system). Battery requires PowerDevil's battery/brightness modules and `Qt5Compat.GraphicalEffects` (`qml6-module-qt5compat-graphicaleffects`). Standard Plasma, Kirigami, and KDE settings QML modules must also be installed. PyQt6 is needed only to regenerate assets or render previews, not for installation.
+
+## Apply the user theme
+
+Use the committed assets; regeneration is optional. From this directory:
 
 ```bash
-python3 scripts/build_assets.py
 ./scripts/install-icons.sh
 ./scripts/apply-user.sh
+```
+
+The icon installer downloads the official Tela Circle source at a pinned commit. The user installer takes a dated snapshot under `backups/`, prints the exact restore command, and attempts to restore that snapshot if applying fails. It updates KDE and GTK colors/fonts, Konsole, the Zsh prompt, desktop and lock-screen wallpaper, and the bottom panel, then restarts Plasma Shell.
+
+Reapplying preserves the bottom panel's height, existing launcher and selected launcher icon, and the Orbital widget settings described below. Backups are local and excluded from Git.
+
+### Optional Kubuntu SDDM login screen
+
+```bash
 sudo ./scripts/apply-sddm.sh
 ```
 
-On a desktop where Orbital is already applied, upgrade only the three widgets with:
+This step targets an existing `/usr/share/sddm/themes/kubuntu/` theme and `/etc/sddm.conf.d/` directory. It does not install a login theme, change the selected SDDM theme, or adapt other themes. Use it only where the Kubuntu theme is already selected. It copies a system-readable wallpaper and writes overrides, with a separate root backup under `/var/backups/orbital-sddm/`. The next login shows the result.
+
+### Install widgets separately
+
+For a new installation of just the applets:
+
+```bash
+kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.cpu
+kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.memory
+kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.battery
+```
+
+Then add them through Plasma's **Add Widgets** menu. These commands leave the theme and panel layout to you and do not create an Orbital snapshot.
+
+To upgrade the three applets without changing an existing panel layout:
 
 ```bash
 ./scripts/upgrade-widgets.sh
 ```
 
-This keeps the existing panel layout and widget settings. The script takes a snapshot, upgrades the packages with `kpackagetool6`, and restarts Plasma Shell once.
+This script takes a snapshot, installs or upgrades each package, and restarts Plasma Shell once while preserving widget settings. For one applet, use `kpackagetool6 --type Plasma/Applet --upgrade` with that applet's directory.
 
-`apply-user.sh` requires the active Plasma session. It saves a dated snapshot under `backups/` before changing user files and prints the exact restore command. The SDDM step copies a system-readable wallpaper, overrides the current Kubuntu login theme, and creates a separate root backup in `/var/backups/orbital-sddm/`.
+## Widget settings
 
-Reapplying the user theme preserves the bottom panel's current height; all three indicators resize with it. It also preserves the existing Start launcher and its selected icon.
+Right-click a widget and open its configuration. The galleries below render the actual QML visual components with fixed sample values; they are not live telemetry screenshots.
 
-To adjust the CPU orbit, right-click Orbital CPU and open its settings. Choose Classic (the original single satellite), Constellation (three linked satellites, prototype 6), or Pulsar (a dotted orbit with a beacon and pulsing inner rings, prototype 8). Classic remains the default. Constellation offers a percentage position choice: beside the orbit (the default), or inside with the lines and satellites drawn over the digits. Set the indicator size to 60–150% of its panel-relative baseline, horizontal padding to 0–32 px per side, and vertical padding to 0–24 px per side. These controls apply to every style; the panel height limits the effective size and vertical padding. The settings show an animated panel preview at 50% CPU. Set the maximum speed at 100% CPU from 0 to 120 RPM (30 by default). Orbit speed follows CPU usage linearly, and 0% CPU stops all motion. Reapplying the user theme keeps the chosen style, Constellation percentage position, size, padding, and speed.
+### CPU
 
-Hover anywhere over any CPU style, including its padding and percentage, for usage, hottest-core temperature in °C, and average frequency in GHz (two decimal places). Usage reuses the meter's existing once-per-second reading. Temperature and frequency subscriptions are enabled only while hovering, with value updates limited to once per second and no shell polling. Loading or unavailable readings show a dash, including the temperature sensor's initial zero reading. Click the meter to open Plasma System Monitor.
+![CPU orbit styles and sample loads](docs/images/cpu.png)
 
-The RAM indicator has two selectable styles: Fan (17 radial ticks) and Silicon (eight chip banks). Both read physical RAM usage once per second and keep the exact percentage visible in the center. Fan is the default. Fan also shows used swap as five amber ticks in its lower arc, enabled by default; even a small nonzero amount lights one tick. Hover anywhere over Fan, with the swap gauge on or off, for separate RAM and swap lines showing used/total GB (two decimal places) and percentages. No configured swap is labeled disabled, and unavailable readings show a dash. Right-click Orbital Memory and choose **Configure Orbital Memory** to switch styles, set the size to 60–110% of its panel-relative fit, and customize the active, inactive, text, chip body, and chip outline colors. In Fan settings, toggle **Show swap gauge** or customize **Swap color**. Turning the gauge off restores the original Fan appearance while retaining swap in the tooltip. The theme button copies current KDE colors into the editable settings, using the neutral color for swap. Reapplying the user theme preserves the selection, size, swap toggle, and colors.
+Choose **Classic** (the default single satellite), **Constellation** (three linked satellites), or **Pulsar** (a dotted orbit with a beacon and pulsing inner rings). Constellation can place its percentage beside the orbit or inside, behind the geometry.
 
-Orbital Battery uses a 20-cell grid and cyan palette. Each solid cell represents a completed 5% of charge, filling from bottom to top, and all 20 cells light up at 99%. While charging below 99%, the next empty cell pulses; at 99% or above, or when charging stops, the pulse stops. Hover to see the percentage on a frosted blue badge; it also appears automatically at 20% charge or below. Right-click Orbital Battery and open its settings to show the percentage all the time, customize each grid and badge color, or copy colors from the current KDE theme. The theme button copies the colors into the settings so they can be adjusted before applying. Reapplying the user theme preserves these choices. The grid keeps a fixed panel width. Click for the familiar Plasma battery menu with brightness and power profiles, or scroll over the widget to adjust screen brightness. The stock battery icon remains available in the tray overflow.
+Set the indicator to 60–150% of its panel-relative baseline, horizontal padding to 0–32 px per side, and vertical padding to 0–24 px per side. Panel height limits the effective size and vertical padding. Settings include an animated preview at 50% CPU. Maximum speed at 100% CPU is 0–120 RPM, with 30 RPM as the default; speed follows CPU usage linearly and 0% stops all motion.
+
+Hover anywhere over the meter, including padding and percentage, for usage, hottest-core temperature in °C, and average frequency in GHz (two decimal places). Usage reuses the existing once-per-second reading. Temperature and frequency subscribe only while hovering, with updates limited to once per second and no shell polling. Loading or unavailable readings show a dash, including an initial zero temperature. Click to open Plasma System Monitor.
+
+### Memory
+
+![Fan and Silicon memory styles and sample RAM/swap values](docs/images/memory.png)
+
+Choose **Fan** (the default, 17 radial ticks) or **Silicon** (eight chip banks). Both read physical RAM usage once per second and keep the percentage visible in the center. Set the size to 60–110% of its panel-relative fit and customize the active, inactive, text, chip body, and chip outline colors.
+
+Fan shows used swap as five amber ticks in its lower arc by default; even a small nonzero amount lights one tick. Toggle **Show swap gauge** or adjust **Swap color**. Hiding the gauge retains swap in the tooltip. Hover over Fan for separate RAM/swap used/total GB (two decimal places) and percentages. No configured swap is labeled disabled; unavailable readings show a dash. Click either style to open Plasma System Monitor.
+
+The theme button copies current KDE colors into editable settings, using the neutral color for swap. Reapplying preserves style, size, swap toggle, and colors.
+
+### Battery
+
+![Battery charge, hover, charging, and low-charge examples](docs/images/battery.png)
+
+The cyan 4×5 grid fills from bottom to top. Each solid cell represents a completed 5% of charge; all 20 cells light at 99%. While charging below 99%, the next empty cell pulses. The pulse stops at 99% or above or when charging stops.
+
+Hover for a frosted percentage badge; it also appears at 20% or below. Settings can show the percentage permanently, customize grid/badge colors, or copy current KDE colors into editable fields. The grid keeps a fixed panel width. Click for battery details, brightness, power profiles, and sleep inhibition controls, or scroll to adjust screen brightness. The stock battery icon remains available in tray overflow after the full theme is applied. Reapplying preserves the Orbital appearance settings.
 
 ## Restore
 
 ```bash
 ./scripts/restore-user.sh
+```
+
+This restores the latest user snapshot. To choose a particular snapshot, pass the backup directory printed by the installer as the first argument. Restore is a return to that snapshot, so subsequent edits to the saved settings are replaced. Sign out and back in to refresh all running applications.
+
+If the optional SDDM override was applied:
+
+```bash
 sudo ./scripts/restore-sddm.sh
 ```
 
-Sign out and back in after restoring to refresh all running applications. Backups are excluded from Git.
+Pass a root backup directory as the first argument to select an older SDDM snapshot. Sign out or reboot to refresh the login screen.
 
-## Files
+## Regenerate assets
 
-- `CURRENT_SYSTEM.md`: historical pre-rice system inventory.
-- `assets/wallpaper/`: original 3000×2000 and 2560×1440 SVG/PNG wallpapers.
-- `assets/kde/Orbital.colors`: KDE color palette based on Breeze Dark.
-- `assets/konsole/` and `assets/zsh/`: terminal colors, IBM Plex Mono profile and single-line prompt.
-- `widgets/org.orbital.cpu/` and `widgets/org.orbital.memory/`: separate CPU orbit and switchable Fan/Silicon RAM indicators that scale with panel height. Click either to open Plasma System Monitor.
-- `widgets/org.orbital.battery/`: 4×5 battery grid with Plasma 6 battery, brightness, power profile, and inhibition controls.
-- `scripts/plasma-layout.js`: preserves the existing launcher, pager and pinned task manager, moves the tray and clock to the bottom, and removes the old top panel.
+Development only: install PyQt6 (`python3-pyqt6` on the checked Ubuntu system), Qt's SVG image support, IBM Plex fonts, and the Breeze Dark color template at `/usr/share/color-schemes/BreezeDark.colors`, then run:
 
-The SDDM override is applied only by the `sudo` command. The user theme, including the lock screen, can be applied separately.
+```bash
+python3 scripts/build_assets.py
+```
+
+The generator defaults to Qt's offscreen platform. It overwrites the KDE color scheme and the 3000×2000 / 2560×1440 SVG/PNG wallpapers in the checkout. A different Breeze version or font renderer may produce different output. Each widget also includes a `preview.qml` for its fixed-value gallery.
+
+## Licensing and credits
+
+Author-created code, documentation, terminal settings, and original orbital wallpaper are distributed under [MIT](LICENSE). The Battery package is [LGPL-2.0-or-later](widgets/org.orbital.battery/LICENSE), and the color scheme derived from KDE Breeze Dark is [GPL-2.0-or-later](LICENSES/GPL-2.0-or-later.txt).
+
+See [license coverage and third-party credits](THIRD_PARTY.md) for source attribution, upstream versions, and external icon/font dependencies. Upstream licenses continue to cover their own materials, including third-party elements visible in the desktop screenshot.

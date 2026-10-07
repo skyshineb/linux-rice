@@ -11,3 +11,9 @@ https://download.kde.org/stable/plasma/6.6.6/powerdevil-6.6.6.tar.xz.
 Orbital panel design and its existing configuration keys. The custom popup
 keeps battery details, brightness adjustment, power profiles, and sleep
 inhibition in one place.
+
+The entire Orbital Battery package, including its custom visuals and
+configuration, is distributed under [LGPL-2.0-or-later](LICENSE). Original
+KDE notices are preserved. Orbital adaptations are copyright © 2026
+Nikolay Skovorodin; publication notices were added on 2026-10-07.
+See [project credits](../../THIRD_PARTY.md) for license coverage and attribution.

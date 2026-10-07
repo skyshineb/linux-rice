@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+# SPDX-License-Identifier: MIT
+
 # A compact, single-line prompt. Prompt escapes also work in async Git output.
 PROMPT='%F{cyan}%~%f$(git_prompt_info) %F{yellow}›%f '
 ZSH_THEME_GIT_PROMPT_PREFIX=' %F{blue}['

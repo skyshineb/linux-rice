@@ -1,6 +1,8 @@
 /*
     SPDX-FileCopyrightText: 2021 Kai Uwe Broulik <kde@broulik.de>
     SPDX-FileCopyrightText: 2021 David Redondo <kde@david-redondo.de>
+    SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+    Orbital adaptation; publication notice added 2026-10-07.
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 

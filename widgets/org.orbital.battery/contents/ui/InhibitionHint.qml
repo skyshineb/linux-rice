@@ -1,5 +1,7 @@
 /*
     SPDX-FileCopyrightText: 2013 Kai Uwe Broulik <kde@privat.broulik.de>
+    SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+    Orbital adaptation; publication notice added 2026-10-07.
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 

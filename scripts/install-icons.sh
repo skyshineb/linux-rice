@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+# SPDX-License-Identifier: MIT
+
 set -euo pipefail
 # Pinned official Tela Circle source, reviewed for this setup.
 source_url='https://github.com/vinceliuice/Tela-circle-icon-theme.git'

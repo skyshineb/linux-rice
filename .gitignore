@@ -1,3 +1,11 @@
 backups/
 *.pyc
 __pycache__/
+
+# Local desktop inventory and design studies
+/CURRENT_SYSTEM.md
+/prototypes/
+
+# Local wallpaper experiments
+/assets/wallpaper/0.png
+/assets/wallpaper/orbital-realism.png

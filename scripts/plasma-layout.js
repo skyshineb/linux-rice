@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+// SPDX-License-Identifier: MIT
+
 // Apply in a live Plasma 6.6 session using org.kde.PlasmaShell.evaluateScript.
 // Preserve the user's launcher, pager and pinned task manager.
 var wallpaperRoot = "HOME_PLACEHOLDER/.local/share/wallpapers/Orbital";

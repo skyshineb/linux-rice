@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+// SPDX-License-Identifier: LGPL-2.0-or-later
+
 import QtQuick
 import Qt5Compat.GraphicalEffects
 

@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Derived from KDE Breeze Dark; see THIRD_PARTY.md.
+# Orbital palette: Copyright (c) 2026 Nikolay Skovorodin.
+# Publication notice added 2026-10-07.
+
 [ColorEffects:Disabled]
 Color=56,56,56
 ColorAmount=0
