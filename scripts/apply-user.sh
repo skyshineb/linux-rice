@@ -41,7 +41,7 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-for widget in org.orbital.cpu org.orbital.memory org.orbital.battery; do
+for widget in org.orbital.cpu org.orbital.memory; do
   if [[ -d "$HOME/.local/share/plasma/plasmoids/$widget" ]]; then
     kpackagetool6 --type Plasma/Applet --upgrade "$root/widgets/$widget"
   else
@@ -93,12 +93,22 @@ PY
 layout="$(sed "s|HOME_PLACEHOLDER|$HOME|g" "$root/scripts/plasma-layout.js")"
 qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$layout"
 
-# Panel opacity and the private system tray are stored outside the scripting API.
+# Panel opacity and system tray settings are stored outside the scripting API.
 bottom_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0])')"
+tray_applet_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);print(p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0].id)')"
 tray_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var t=p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0];t.currentConfigGroup=[];print(t.readConfig("SystrayContainmentId"))')"
-order="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.cpu","org.orbital.memory","org.orbital.battery","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
-order_pattern='^[0-9]+(;[0-9]+){8}$'
-[[ "$bottom_id" =~ ^[0-9]+$ && "$tray_id" =~ ^[0-9]+$ && "$order" =~ $order_pattern ]]
+order="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.cpu","org.orbital.memory","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
+order_pattern='^[0-9]+(;[0-9]+){7}$'
+[[ "$bottom_id" =~ ^[0-9]+$ && "$tray_applet_id" =~ ^[0-9]+$ && "$order" =~ $order_pattern ]]
+if [[ "$tray_id" =~ ^[0-9]+$ ]]; then
+  tray_groups=(--group Containments --group "$tray_id" --group General)
+elif [[ -z "$tray_id" ]]; then
+  # Plasma 6.6 embeds the tray containment directly in the panel's applet group.
+  tray_groups=(--group Containments --group "$bottom_id" --group Applets --group "$tray_applet_id" --group General)
+else
+  echo "Invalid system tray containment ID: $tray_id" >&2
+  false
+fi
 sni_ids="$(qdbus6 org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | while IFS= read -r item; do
   [[ "$item" == */* ]] || continue
   qdbus6 "${item%%/*}" "/${item#*/}" org.freedesktop.DBus.Properties.Get org.kde.StatusNotifierItem Id 2>/dev/null || true
@@ -109,7 +119,7 @@ kwriteconfig6 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "
 kwriteconfig6 --file "$HOME/.config/plasmashellrc" --group PlasmaViews --group "Panel $bottom_id" --key floating 0
 kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$bottom_id" --group General --key AppletOrder "$order"
 shown='org.kde.plasma.networkmanagement,org.kde.plasma.volume'
-known="$(kreadconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key knownItems)"
+known="$(kreadconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" "${tray_groups[@]}" --key knownItems)"
 hidden="$(python3 - "$known" "$shown" "$sni_ids" <<'PY'
 import re
 import sys
@@ -120,9 +130,9 @@ app_ids = [re.sub(r'^dropbox-client-\d+$', 'dropbox-client-PID', item)
 print(','.join(dict.fromkeys([item for item in known if item not in shown] + ['org.kde.plasma.battery'] + app_ids)))
 PY
 )"
-kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key shownItems "$shown"
-kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key hiddenItems "$hidden"
-kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" --group Containments --group "$tray_id" --group General --key showAllItems false
+kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" "${tray_groups[@]}" --key shownItems "$shown"
+kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" "${tray_groups[@]}" --key hiddenItems "$hidden"
+kwriteconfig6 --file "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" "${tray_groups[@]}" --key showAllItems false
 if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.load" ]]; then
   kpackagetool6 --type Plasma/Applet --remove org.orbital.load
 fi

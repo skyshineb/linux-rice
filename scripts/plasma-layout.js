@@ -27,15 +27,10 @@ var savedShowSwapGauge = null;
 var memoryColorKeys = ["filledColor", "emptyColor", "textColor",
                        "chipBodyColor", "chipOutlineColor", "swapColor"];
 var savedMemoryColors = {};
-var savedBatteryAlwaysShowPercent = null;
-var batteryColorKeys = ["filledColor", "emptyColor", "chargingColor",
-                        "badgeBaseColor", "badgeTintColor", "badgeTextColor"];
-var savedBatteryColors = {};
 var savedAppearance = {};
 var appearanceKeys = {
     "org.orbital.cpu": ["colorMode", "filledColor", "emptyColor", "trackColor", "textColor"],
-    "org.orbital.memory": ["colorMode"],
-    "org.orbital.battery": ["colorMode"]
+    "org.orbital.memory": ["colorMode"]
 };
 for (var i = 0; i < existing.length; ++i) {
     var appearanceType = existing[i].type;
@@ -104,22 +99,6 @@ for (var i = 0; i < existing.length; ++i) {
                 savedMemoryColors[memoryColorKey] = savedMemoryColor;
             }
         }
-    } else if (existing[i].type === "org.orbital.battery") {
-        existing[i].currentConfigGroup = ["General"];
-        var rawBatteryAlwaysShowPercent = existing[i].readConfig("alwaysShowPercent");
-        var savedBatteryValue = String(rawBatteryAlwaysShowPercent).toLowerCase();
-        if (savedBatteryValue === "true" || savedBatteryValue === "1") {
-            savedBatteryAlwaysShowPercent = true;
-        } else if (savedBatteryValue === "false" || savedBatteryValue === "0") {
-            savedBatteryAlwaysShowPercent = false;
-        }
-        for (var colorIndex = 0; colorIndex < batteryColorKeys.length; ++colorIndex) {
-            var colorKey = batteryColorKeys[colorIndex];
-            var savedColor = existing[i].readConfig(colorKey);
-            if (savedColor !== undefined && savedColor !== null && String(savedColor) !== "") {
-                savedBatteryColors[colorKey] = savedColor;
-            }
-        }
     }
 }
 var keep = {"org.kde.plasma.kickoff": true,
@@ -142,12 +121,10 @@ bottom.length = width;
 bottom.addWidget("org.kde.plasma.panelspacer");
 var cpu = bottom.addWidget("org.orbital.cpu");
 var memory = bottom.addWidget("org.orbital.memory");
-var battery = bottom.addWidget("org.orbital.battery");
-if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory"
-        || !battery || battery.type !== "org.orbital.battery") {
-    throw new Error("An Orbital CPU, Memory or Battery widget was not available");
+if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory") {
+    throw new Error("An Orbital CPU or Memory widget was not available");
 }
-var appearanceWidgets = [cpu, memory, battery];
+var appearanceWidgets = [cpu, memory];
 for (var widgetIndex = 0; widgetIndex < appearanceWidgets.length; ++widgetIndex) {
     var appearanceWidget = appearanceWidgets[widgetIndex];
     var appearanceSettings = savedAppearance[appearanceWidget.type] || {};
@@ -194,17 +171,6 @@ for (var memoryColorIndex = 0; memoryColorIndex < memoryColorKeys.length; ++memo
         memory.writeConfig(memoryColorKey, savedMemoryColors[memoryColorKey]);
     }
 }
-if (savedBatteryAlwaysShowPercent !== null) {
-    battery.currentConfigGroup = ["General"];
-    battery.writeConfig("alwaysShowPercent", savedBatteryAlwaysShowPercent);
-}
-for (var colorIndex = 0; colorIndex < batteryColorKeys.length; ++colorIndex) {
-    var colorKey = batteryColorKeys[colorIndex];
-    if (savedBatteryColors[colorKey] !== undefined) {
-        battery.currentConfigGroup = ["General"];
-        battery.writeConfig(colorKey, savedBatteryColors[colorKey]);
-    }
-}
 var tray = bottom.addWidget("org.kde.plasma.systemtray");
 var clock = bottom.addWidget("org.kde.plasma.digitalclock");
 clock.currentConfigGroup = ["Appearance"];
@@ -214,4 +180,4 @@ clock.writeConfig("showDate", false);
 if (top) { top.remove(); }
 
 // Wallpaper and colors are applied separately by orbital-theme.
-print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", battery=" + battery.id + ", tray=" + tray.id);
+print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", tray=" + tray.id);

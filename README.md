@@ -14,7 +14,9 @@ A restrained mission-control look for KDE Plasma 6: dark navy surfaces, muted cy
 | [Appearance assets](assets/) | Dark/light palettes, KDE/Konsole colors, wallpapers in two resolutions, a Konsole profile, and an Oh My Zsh prompt. |
 | [Installation scripts](scripts/) | Desktop setup, separate widget upgrades, snapshots, restore, and an optional SDDM override. |
 
-The widgets are independent Plasma applet packages. They can be installed without applying the desktop theme.
+The default desktop installs and adds **Orbital CPU** and **Orbital Memory**.
+**Orbital Battery** is optional. The widgets are independent Plasma applet packages
+and can be installed without applying the desktop theme.
 
 ## Color schemes
 
@@ -208,12 +210,17 @@ For a new installation of just the applets:
 ```bash
 kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.cpu
 kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.memory
+```
+
+To also install the optional Battery widget:
+
+```bash
 kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.battery
 ```
 
 Then add them through Plasma's **Add Widgets** menu. These commands leave the theme and panel layout to you and do not create an Orbital snapshot.
 
-To upgrade the three applets without changing an existing panel layout:
+To upgrade CPU and Memory, plus Battery if it is already installed, without changing an existing panel layout:
 
 ```bash
 ./scripts/upgrade-widgets.sh
@@ -229,9 +236,9 @@ Right-click a widget and open its configuration. The galleries below render the 
 
 ![CPU orbit styles and sample loads](docs/images/cpu.png)
 
-Choose **Classic** (the default single satellite), **Constellation** (three linked satellites), or **Pulsar** (a dotted orbit with a beacon and pulsing inner rings). Constellation can place its percentage beside the orbit or inside, behind the geometry.
+Choose **Classic** (a single satellite), **Constellation** (the default, three linked satellites), or **Pulsar** (a dotted orbit with a beacon and pulsing inner rings). Constellation places its percentage inside by default, behind the geometry; it can also show the percentage beside the orbit.
 
-Set the indicator to 60–150% of its panel-relative baseline, horizontal padding to 0–32 px per side, and vertical padding to 0–24 px per side. Panel height limits the effective size and vertical padding. Settings include an animated preview at 50% CPU. Maximum speed at 100% CPU is 0–120 RPM, with 30 RPM as the default; speed follows CPU usage linearly and 0% stops all motion.
+Set the indicator to 60–150% of its panel-relative baseline (110% by default), horizontal padding to 0–32 px per side, and vertical padding to 0–24 px per side (both default to 0 px). Panel height limits the effective size and vertical padding. Settings include an animated preview at 50% CPU. Maximum speed at 100% CPU is 0–120 RPM, with 120 RPM as the default; speed follows CPU usage linearly and 0% stops all motion.
 
 Hover anywhere over the meter, including padding and percentage, for usage, hottest-core temperature in °C, and average frequency in GHz (two decimal places). Usage reuses the existing once-per-second reading. Temperature and frequency subscribe only while hovering, with updates limited to once per second and no shell polling. Loading or unavailable readings show a dash, including an initial zero temperature. Click to open Plasma System Monitor.
 
@@ -253,7 +260,7 @@ swap toggle, color source, and custom colors.
 
 The cyan 4×5 grid fills from bottom to top. Each solid cell represents a completed 5% of charge; all 20 cells light at 99%. While charging below 99%, the next empty cell pulses. The pulse stops at 99% or above or when charging stops.
 
-Hover for a frosted percentage badge; it also appears at 20% or below. Settings can show the percentage permanently, follow KDE colors, customize grid/badge colors, or copy current KDE colors into custom fields. The grid keeps a fixed panel width. Click for battery details, brightness, power profiles, and sleep inhibition controls, or scroll to adjust screen brightness. The stock battery icon remains available in tray overflow after the full theme is applied. Reapplying preserves the Orbital appearance settings.
+Hover for a frosted percentage badge; it also appears at 20% or below. Settings can show the percentage permanently, follow KDE colors, customize grid/badge colors, or copy current KDE colors into custom fields. The grid keeps a fixed panel width. Click for battery details, brightness, power profiles, and sleep inhibition controls, or scroll to adjust screen brightness. The stock battery icon remains available in tray overflow after the full theme is applied. Widget upgrades preserve Battery settings. Reapplying the full theme rebuilds the panel with CPU and Memory; add the optional Battery widget again afterward if needed.
 
 ## Restore
 

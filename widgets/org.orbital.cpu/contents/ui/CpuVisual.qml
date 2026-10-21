@@ -16,10 +16,10 @@ Item {
 
     property real cpuPercent: NaN
     // 0 = original orbit, 1 = Constellation, 2 = Pulsar.
-    property int orbitStyle: 0
+    property int orbitStyle: 1
     // Constellation only: 0 = beside the orbit, 1 = inside, behind the geometry.
-    property int constellationReadoutPosition: 0
-    property real maxRpm: 30
+    property int constellationReadoutPosition: 1
+    property real maxRpm: 120
     property bool animationsEnabled: true
     readonly property int effectiveStyle: orbitStyle === 1 || orbitStyle === 2 ? orbitStyle : 0
     readonly property bool readoutBesideOrbit: effectiveStyle === 1 && constellationReadoutPosition !== 1

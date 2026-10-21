@@ -24,7 +24,11 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-for widget in org.orbital.cpu org.orbital.memory org.orbital.battery; do
+widgets=(org.orbital.cpu org.orbital.memory)
+if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.battery" ]]; then
+  widgets+=(org.orbital.battery)
+fi
+for widget in "${widgets[@]}"; do
   if [[ -d "$HOME/.local/share/plasma/plasmoids/$widget" ]]; then
     kpackagetool6 --type Plasma/Applet --upgrade "$root/widgets/$widget"
   else

@@ -13,20 +13,20 @@ Item {
     implicitHeight: 48
 
     property real cpuPercent: NaN
-    property int orbitStyle: 0
-    property int constellationReadoutPosition: 0
-    property real maxRpm: 30
+    property int orbitStyle: 1
+    property int constellationReadoutPosition: 1
+    property real maxRpm: 120
     property bool animationsEnabled: true
-    property real relativeSize: 100
-    property real horizontalPadding: 4
-    property real verticalPadding: 4
+    property real relativeSize: 110
+    property real horizontalPadding: 0
+    property real verticalPadding: 0
 
     readonly property real effectiveScale: isFinite(relativeSize)
-        ? Math.max(60, Math.min(150, relativeSize)) / 100 : 1
+        ? Math.max(60, Math.min(150, relativeSize)) / 100 : 1.1
     readonly property real effectiveHorizontalPadding: isFinite(horizontalPadding)
-        ? Math.max(0, Math.min(32, horizontalPadding)) : 4
+        ? Math.max(0, Math.min(32, horizontalPadding)) : 0
     readonly property real effectiveVerticalPadding: Math.min(
-        isFinite(verticalPadding) ? Math.max(0, Math.min(24, verticalPadding)) : 4,
+        isFinite(verticalPadding) ? Math.max(0, Math.min(24, verticalPadding)) : 0,
         Math.max(0, (height - 24) / 2))
     // The original gauge occupied 40 px in a 48 px panel slot. Scale from
     // that baseline, keeping all graphics inside the available panel height.
