@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
 # SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Nikolay Skovorodin.
 
 [Background]
 Color=11,20,32
@@ -68,5 +68,5 @@ Color=231,238,242
 Color=255,255,255
 
 [General]
-Description=Orbital
+Description=Orbital Dark
 Opacity=1

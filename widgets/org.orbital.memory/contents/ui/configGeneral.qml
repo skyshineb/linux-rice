@@ -10,6 +10,19 @@ import org.kde.kcmutils as KCM
 KCM.SimpleKCM {
     id: root
 
+    property int cfg_colorMode: -1
+
+    readonly property bool legacyCustomColors: {
+        if (!Qt.colorEqual(root.cfg_filledColor, "#70D4E8")) return true
+        if (!Qt.colorEqual(root.cfg_emptyColor, "#315262")) return true
+        if (!Qt.colorEqual(root.cfg_textColor, "#E9F6F8")) return true
+        if (!Qt.colorEqual(root.cfg_chipBodyColor, "#183646")) return true
+        if (!Qt.colorEqual(root.cfg_chipOutlineColor, "#799BA9")) return true
+        if (!Qt.colorEqual(root.cfg_swapColor, "#E6B96A")) return true
+        return false
+    }
+
+
     property alias cfg_meterStyle: styleCombo.currentIndex
     property alias cfg_meterScale: sizeSpin.value
     property alias cfg_showSwapGauge: showSwapCheck.checked
@@ -27,6 +40,14 @@ KCM.SimpleKCM {
     }
 
     Kirigami.FormLayout {
+        QQC2.ComboBox {
+            id: colorModeCombo
+            Kirigami.FormData.label: i18n("Color source:")
+            model: [i18n("KDE theme"), i18n("Custom colors")]
+            currentIndex: root.cfg_colorMode < 0 ? (root.legacyCustomColors ? 1 : 0) : root.cfg_colorMode
+            onActivated: root.cfg_colorMode = currentIndex
+        }
+
         QQC2.ComboBox {
             id: styleCombo
             Kirigami.FormData.label: i18n("Meter style:")
@@ -60,11 +81,12 @@ KCM.SimpleKCM {
             dialogTitle: i18n("Swap gauge color")
             showAlphaChannel: true
             visible: styleCombo.currentIndex !== 1
-            enabled: showSwapCheck.checked
+            enabled: colorModeCombo.currentIndex === 1 && showSwapCheck.checked
         }
 
         KQC.ColorButton {
             id: filledColorButton
+            enabled: colorModeCombo.currentIndex === 1
             Kirigami.FormData.label: i18n("Active ticks / banks:")
             dialogTitle: i18n("Active meter color")
             showAlphaChannel: true
@@ -72,6 +94,7 @@ KCM.SimpleKCM {
 
         KQC.ColorButton {
             id: emptyColorButton
+            enabled: colorModeCombo.currentIndex === 1
             Kirigami.FormData.label: i18n("Inactive ticks / banks:")
             dialogTitle: i18n("Inactive meter color")
             showAlphaChannel: true
@@ -79,6 +102,7 @@ KCM.SimpleKCM {
 
         KQC.ColorButton {
             id: textColorButton
+            enabled: colorModeCombo.currentIndex === 1
             Kirigami.FormData.label: i18n("Percentage text:")
             dialogTitle: i18n("Percentage text color")
             showAlphaChannel: true
@@ -86,6 +110,7 @@ KCM.SimpleKCM {
 
         KQC.ColorButton {
             id: chipBodyColorButton
+            enabled: colorModeCombo.currentIndex === 1
             Kirigami.FormData.label: i18n("Chip body:")
             dialogTitle: i18n("Chip body color")
             showAlphaChannel: true
@@ -93,14 +118,16 @@ KCM.SimpleKCM {
 
         KQC.ColorButton {
             id: chipOutlineColorButton
+            enabled: colorModeCombo.currentIndex === 1
             Kirigami.FormData.label: i18n("Chip outline / pins:")
             dialogTitle: i18n("Chip outline and pin color")
             showAlphaChannel: true
         }
 
         QQC2.Button {
-            text: i18n("Use current KDE theme colors")
+            text: i18n("Copy KDE colors to custom palette")
             onClicked: {
+                root.cfg_colorMode = 1
                 const background = Kirigami.Theme.backgroundColor
                 const accent = Kirigami.Theme.linkColor
                 const textColor = Kirigami.Theme.textColor

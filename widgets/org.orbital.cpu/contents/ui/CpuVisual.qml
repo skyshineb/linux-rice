@@ -5,6 +5,10 @@ import QtQuick
 
 Item {
     id: root
+    property color filledColor: "#67C4DE"
+    property color emptyColor: "#547C8C"
+    property color trackColor: "#2F4D60"
+    property color textColor: "#E7EEF2"
     implicitWidth: height + (readoutBesideOrbit ? measuredReadout.implicitWidth + readoutGap : 0)
     implicitHeight: 44
     readonly property real unit: height / 44
@@ -40,6 +44,10 @@ Item {
     Component {
         id: classic
         ClassicCpuVisual {
+            filledColor: root.filledColor
+            emptyColor: root.emptyColor
+            trackColor: root.trackColor
+            textColor: root.textColor
             cpuReady: root.cpuReady
             orbitAngle: root.orbitAngle
         }
@@ -48,6 +56,10 @@ Item {
     Component {
         id: constellation
         ConstellationCpuVisual {
+            filledColor: root.filledColor
+            emptyColor: root.emptyColor
+            trackColor: root.trackColor
+            textColor: root.textColor
             cpuReady: root.cpuReady
             orbitAngle: root.orbitAngle
         }
@@ -56,6 +68,10 @@ Item {
     Component {
         id: pulsar
         PulsarCpuVisual {
+            filledColor: root.filledColor
+            emptyColor: root.emptyColor
+            trackColor: root.trackColor
+            textColor: root.textColor
             cpuReady: root.cpuReady
             cpuPercent: root.clampedPercent
             orbitAngle: root.orbitAngle
@@ -77,7 +93,7 @@ Item {
         width: root.readoutBesideOrbit ? measuredReadout.implicitWidth : implicitWidth
         horizontalAlignment: Text.AlignHCenter
         text: root.cpuReady ? Math.round(root.clampedPercent) + "%" : "—"
-        color: "#E7EEF2"
+        color: root.textColor
         font.family: "IBM Plex Mono"
         font.pixelSize: Math.max(8, Math.round(11 * root.unit))
         font.weight: Font.Medium

@@ -3,7 +3,6 @@
 
 // Apply in a live Plasma 6.6 session using org.kde.PlasmaShell.evaluateScript.
 // Preserve the user's launcher, pager and pinned task manager.
-var wallpaperRoot = "HOME_PLACEHOLDER/.local/share/wallpapers/Orbital";
 var panels = panelIds.map(function (id) { return panelById(id); });
 var bottom = panels.filter(function (p) { return p.location === "bottom"; })[0];
 if (!bottom) { throw new Error("No existing bottom panel was found"); }
@@ -32,7 +31,25 @@ var savedBatteryAlwaysShowPercent = null;
 var batteryColorKeys = ["filledColor", "emptyColor", "chargingColor",
                         "badgeBaseColor", "badgeTintColor", "badgeTextColor"];
 var savedBatteryColors = {};
+var savedAppearance = {};
+var appearanceKeys = {
+    "org.orbital.cpu": ["colorMode", "filledColor", "emptyColor", "trackColor", "textColor"],
+    "org.orbital.memory": ["colorMode"],
+    "org.orbital.battery": ["colorMode"]
+};
 for (var i = 0; i < existing.length; ++i) {
+    var appearanceType = existing[i].type;
+    if (appearanceKeys[appearanceType]) {
+        existing[i].currentConfigGroup = ["General"];
+        savedAppearance[appearanceType] = {};
+        for (var appearanceIndex = 0; appearanceIndex < appearanceKeys[appearanceType].length; ++appearanceIndex) {
+            var appearanceKey = appearanceKeys[appearanceType][appearanceIndex];
+            var appearanceValue = existing[i].readConfig(appearanceKey);
+            if (appearanceValue !== undefined && appearanceValue !== null && String(appearanceValue) !== "") {
+                savedAppearance[appearanceType][appearanceKey] = appearanceValue;
+            }
+        }
+    }
     if (existing[i].type === "org.orbital.cpu") {
         existing[i].currentConfigGroup = ["General"];
         var rawOrbitStyle = String(existing[i].readConfig("orbitStyle"));
@@ -130,6 +147,15 @@ if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.or
         || !battery || battery.type !== "org.orbital.battery") {
     throw new Error("An Orbital CPU, Memory or Battery widget was not available");
 }
+var appearanceWidgets = [cpu, memory, battery];
+for (var widgetIndex = 0; widgetIndex < appearanceWidgets.length; ++widgetIndex) {
+    var appearanceWidget = appearanceWidgets[widgetIndex];
+    var appearanceSettings = savedAppearance[appearanceWidget.type] || {};
+    appearanceWidget.currentConfigGroup = ["General"];
+    for (var appearanceKey in appearanceSettings) {
+        appearanceWidget.writeConfig(appearanceKey, appearanceSettings[appearanceKey]);
+    }
+}
 if (savedMaxRpm !== null) {
     cpu.currentConfigGroup = ["General"];
     cpu.writeConfig("maxRpm", savedMaxRpm);
@@ -187,14 +213,5 @@ clock.writeConfig("showDate", false);
 // Remove the old monitor widgets and their panel only after the replacement exists.
 if (top) { top.remove(); }
 
-var ds = desktops();
-for (var d = 0; d < ds.length; ++d) {
-    var desktop = ds[d];
-    var geo = desktop.screen >= 0 ? screenGeometry(desktop.screen) : screenGeometry(bottom.screen);
-    var image = desktop.screen < 0 ? "orbital-2560x1440.png" :
-        (geo.width >= 2800 ? "orbital-3000x2000.png" : "orbital-2560x1440.png");
-    desktop.wallpaperPlugin = "org.kde.image";
-    desktop.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
-    desktop.writeConfig("Image", wallpaperRoot + "/" + image);
-}
+// Wallpaper and colors are applied separately by orbital-theme.
 print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", battery=" + battery.id + ", tray=" + tray.id);

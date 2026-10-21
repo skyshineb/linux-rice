@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Nikolay Skovorodin
+# SPDX-License-Identifier: MIT
+
+from orbital_themes import main
+
+raise SystemExit(main())

@@ -5,6 +5,10 @@ import QtQuick
 
 Item {
     id: root
+    property color filledColor: "#67C4DE"
+    property color emptyColor: "#547C8C"
+    property color trackColor: "#2F4D60"
+    property color textColor: "#E7EEF2"
     implicitWidth: visual.implicitWidth + 2 * effectiveHorizontalPadding
     implicitHeight: 48
 
@@ -31,6 +35,10 @@ Item {
         Math.max(24, height * 5 / 6 * effectiveScale)))
 
     CpuVisual {
+        filledColor: root.filledColor
+        emptyColor: root.emptyColor
+        trackColor: root.trackColor
+        textColor: root.textColor
         id: visual
         anchors.centerIn: parent
         width: implicitWidth

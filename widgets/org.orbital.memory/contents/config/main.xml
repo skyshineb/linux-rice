@@ -7,6 +7,10 @@
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
   <kcfgfile name=""/>
   <group name="General">
+    <entry name="colorMode" type="Int">
+      <!-- -1 migrates legacy colors once; 0 follows KDE, 1 is custom. -->
+      <default>-1</default>
+    </entry>
     <entry name="meterStyle" type="Int">
       <default>0</default>
     </entry>

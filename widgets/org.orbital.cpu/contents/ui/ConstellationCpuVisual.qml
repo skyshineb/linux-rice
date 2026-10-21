@@ -5,6 +5,10 @@ import QtQuick
 
 Item {
     id: root
+    property color filledColor: "#67C4DE"
+    property color emptyColor: "#547C8C"
+    property color trackColor: "#2F4D60"
+    property color textColor: "#E7EEF2"
     readonly property real unit: Math.min(width, height) / 120
     property bool cpuReady: false
     property real orbitAngle: 0
@@ -25,7 +29,7 @@ Item {
                 radius: width / 2
                 x: (60 + Math.cos(angle) * 47) * root.unit - width / 2
                 y: (60 + Math.sin(angle) * 47) * root.unit - height / 2
-                color: "#2F4D60"
+                color: root.trackColor
                 antialiasing: true
             }
         }
@@ -49,7 +53,7 @@ Item {
                     y: firstY - height / 2
                     width: Math.sqrt(dx * dx + dy * dy)
                     height: Math.max(0.5, 1.3 * root.unit)
-                    color: root.cpuReady ? "#67C4DE" : "#547C8C"
+                    color: root.cpuReady ? root.filledColor : root.emptyColor
                     opacity: 0.45
                     antialiasing: true
                     transform: Rotation {
@@ -76,7 +80,7 @@ Item {
                         width: 2 * dotRadius
                         height: width
                         radius: dotRadius
-                        color: root.cpuReady ? "#67C4DE" : "#547C8C"
+                        color: root.cpuReady ? root.filledColor : root.emptyColor
                         antialiasing: true
                     }
 
@@ -86,7 +90,7 @@ Item {
                         width: 0.5 * dotRadius
                         height: width
                         radius: width / 2
-                        color: "#E7EEF2"
+                        color: root.textColor
                         antialiasing: true
                     }
                 }

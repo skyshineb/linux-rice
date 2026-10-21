@@ -13,6 +13,12 @@ import org.kde.kirigami as Kirigami
 PlasmoidItem {
     id: root
 
+    Appearance {
+        id: appearance
+        configuration: Plasmoid.configuration
+        theme: root.Kirigami.Theme
+    }
+
     readonly property bool hovered: visible && fullRepresentationItem !== null
         && fullRepresentationItem.containsMouse
     readonly property real cpuPercent: sensorHasValue(cpuSensor)
@@ -94,6 +100,10 @@ PlasmoidItem {
 
         CpuIndicator {
             id: indicator
+            filledColor: appearance.filledColor
+            emptyColor: appearance.emptyColor
+            trackColor: appearance.trackColor
+            textColor: appearance.textColor
             anchors.fill: parent
             cpuPercent: root.cpuPercent
             orbitStyle: Plasmoid.configuration.orbitStyle

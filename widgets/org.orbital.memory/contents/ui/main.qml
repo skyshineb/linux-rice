@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import QtQuick
+import org.kde.kirigami as Kirigami
 import QtQuick.Layouts
 
 import org.kde.plasma.core as PlasmaCore
@@ -11,6 +12,12 @@ import org.kde.ksysguard.sensors as Sensors
 
 PlasmoidItem {
     id: root
+
+    Appearance {
+        id: appearance
+        configuration: Plasmoid.configuration
+        theme: root.Kirigami.Theme
+    }
 
     readonly property bool fanStyle: Plasmoid.configuration.meterStyle !== 1
     readonly property real ramPercent: sensorHasValue(memorySensor)
@@ -126,13 +133,13 @@ PlasmoidItem {
             ramPercent: root.ramPercent
             swapPercent: root.swapPercent
             showSwapGauge: Plasmoid.configuration.showSwapGauge
-            swapColor: Plasmoid.configuration.swapColor
+            swapColor: appearance.swapColor
             meterStyle: Plasmoid.configuration.meterStyle
-            filledColor: Plasmoid.configuration.filledColor
-            emptyColor: Plasmoid.configuration.emptyColor
-            textColor: Plasmoid.configuration.textColor
-            chipBodyColor: Plasmoid.configuration.chipBodyColor
-            chipOutlineColor: Plasmoid.configuration.chipOutlineColor
+            filledColor: appearance.filledColor
+            emptyColor: appearance.emptyColor
+            textColor: appearance.textColor
+            chipBodyColor: appearance.chipBodyColor
+            chipOutlineColor: appearance.chipOutlineColor
         }
 
         MouseArea {

@@ -15,6 +15,12 @@ import org.kde.plasma.plasmoid
 MouseArea {
     id: root
 
+    Appearance {
+        id: appearance
+        configuration: Plasmoid.configuration
+        theme: root.Kirigami.Theme
+    }
+
     required property var appletItem
     required property real chargePercent
     required property bool charging
@@ -52,11 +58,11 @@ MouseArea {
         popupOpen: root.appletItem.expanded
         alwaysShowPercent: Plasmoid.configuration.alwaysShowPercent
         animationsEnabled: Kirigami.Units.longDuration > 0
-        filledColor: Plasmoid.configuration.filledColor
-        emptyColor: Plasmoid.configuration.emptyColor
-        chargingColor: Plasmoid.configuration.chargingColor
-        badgeBaseColor: Plasmoid.configuration.badgeBaseColor
-        badgeTintColor: Plasmoid.configuration.badgeTintColor
-        badgeTextColor: Plasmoid.configuration.badgeTextColor
+        filledColor: appearance.filledColor
+        emptyColor: appearance.emptyColor
+        chargingColor: appearance.chargingColor
+        badgeBaseColor: appearance.badgeBaseColor
+        badgeTintColor: appearance.badgeTintColor
+        badgeTextColor: appearance.badgeTextColor
     }
 }

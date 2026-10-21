@@ -5,6 +5,10 @@ import QtQuick
 
 Item {
     id: root
+    property color filledColor: "#67C4DE"
+    property color emptyColor: "#547C8C"
+    property color trackColor: "#2F4D60"
+    property color textColor: "#E7EEF2"
     readonly property real unit: Math.min(width, height) / 120
     property bool cpuReady: false
     property real cpuPercent: 0
@@ -25,7 +29,7 @@ Item {
                 radius: width / 2
                 x: (60 + Math.cos(angle) * 48) * root.unit - width / 2
                 y: (60 + Math.sin(angle) * 48) * root.unit - height / 2
-                color: "#547C8C"
+                color: root.emptyColor
                 antialiasing: true
             }
         }
@@ -40,7 +44,7 @@ Item {
                 radius: width / 2
                 anchors.centerIn: parent
                 color: "transparent"
-                border.color: "#67C4DE"
+                border.color: root.filledColor
                 border.width: 1.5 * root.unit
                 opacity: 0.08 + wave * root.cpuPercent / 100 * 0.45
                 antialiasing: true
@@ -57,7 +61,7 @@ Item {
                 x: 60 * root.unit - width / 2
                 y: 12 * root.unit - height / 2
                 rotation: 45
-                color: root.cpuReady ? "#67C4DE" : "#547C8C"
+                color: root.cpuReady ? root.filledColor : root.emptyColor
                 antialiasing: true
             }
 
@@ -67,7 +71,7 @@ Item {
                 radius: width / 2
                 x: 60 * root.unit - width / 2
                 y: 12 * root.unit - height / 2
-                color: "#E7EEF2"
+                color: root.textColor
                 antialiasing: true
             }
         }

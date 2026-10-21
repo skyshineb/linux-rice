@@ -1,0 +1,53 @@
+{
+  "id": "orbital-dark",
+  "name": "Orbital Dark",
+  "mode": "dark",
+  "colors": {
+    "canvas": "#0B1420",
+    "panel": "#101D2B",
+    "window": "#152638",
+    "button": "#1C3144",
+    "selected": "#20566E",
+    "text": "#E7EEF2",
+    "muted": "#A5B5C4",
+    "cyan": "#67C4DE",
+    "amber": "#E6B96A",
+    "red": "#E4818A",
+    "green": "#74C69D",
+    "violet": "#A998D8"
+  },
+  "terminal": {
+    "Background": "#0B1420",
+    "BackgroundFaint": "#101D2B",
+    "BackgroundIntense": "#07111D",
+    "Foreground": "#E7EEF2",
+    "ForegroundFaint": "#A5B5C4",
+    "ForegroundIntense": "#FFFFFF",
+    "Color0": "#0B1420",
+    "Color0Intense": "#445969",
+    "Color1": "#E4818A",
+    "Color1Intense": "#F597A0",
+    "Color2": "#74C69D",
+    "Color2Intense": "#9AE0B8",
+    "Color3": "#E6B96A",
+    "Color3Intense": "#F6CD85",
+    "Color4": "#67C4DE",
+    "Color4Intense": "#91DEEF",
+    "Color5": "#A998D8",
+    "Color5Intense": "#C4B6ED",
+    "Color6": "#5BB8BD",
+    "Color6Intense": "#85D4D7",
+    "Color7": "#E7EEF2",
+    "Color7Intense": "#FFFFFF"
+  },
+  "wallpaper": {
+    "spaceTop": "#07111D",
+    "spaceBottom": "#153047",
+    "earthTop": "#254457",
+    "earthMid": "#172E40",
+    "earthBottom": "#060D16",
+    "stars": "#D9EAF1",
+    "grid": "#86B5C5",
+    "horizon": "#B7E2EA"
+  }
+}

@@ -7,6 +7,22 @@
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
   <kcfgfile name=""/>
   <group name="General">
+    <entry name="colorMode" type="Int">
+      <!-- -1 migrates legacy colors once; 0 follows KDE, 1 is custom. -->
+      <default>-1</default>
+    </entry>
+    <entry name="filledColor" type="Color">
+      <default>#67C4DE</default>
+    </entry>
+    <entry name="emptyColor" type="Color">
+      <default>#547C8C</default>
+    </entry>
+    <entry name="trackColor" type="Color">
+      <default>#2F4D60</default>
+    </entry>
+    <entry name="textColor" type="Color">
+      <default>#E7EEF2</default>
+    </entry>
     <entry name="orbitStyle" type="Int">
       <default>0</default>
     </entry>

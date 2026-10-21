@@ -4,9 +4,22 @@
 import QtQuick
 import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
+import org.kde.kquickcontrols as KQC
 import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
+    id: root
+    property int cfg_colorMode: -1
+
+    readonly property bool legacyCustomColors: {
+        if (!Qt.colorEqual(root.cfg_filledColor, "#67C4DE")) return true
+        if (!Qt.colorEqual(root.cfg_emptyColor, "#547C8C")) return true
+        if (!Qt.colorEqual(root.cfg_trackColor, "#2F4D60")) return true
+        if (!Qt.colorEqual(root.cfg_textColor, "#E7EEF2")) return true
+        return false
+    }
+
+
     property alias cfg_orbitStyle: styleCombo.currentIndex
     property alias cfg_constellationReadoutPosition: constellationReadoutCombo.currentIndex
     property alias cfg_maxRpm: speedSpin.value
@@ -14,7 +27,68 @@ KCM.SimpleKCM {
     property alias cfg_horizontalPadding: horizontalPaddingSpin.value
     property alias cfg_verticalPadding: verticalPaddingSpin.value
 
+    property alias cfg_filledColor: filledColorButton.color
+    property alias cfg_emptyColor: emptyColorButton.color
+    property alias cfg_trackColor: trackColorButton.color
+    property alias cfg_textColor: textColorButton.color
+
+    QtObject {
+        id: previewConfig
+        property alias colorMode: root.cfg_colorMode
+        property alias filledColor: root.cfg_filledColor
+        property alias emptyColor: root.cfg_emptyColor
+        property alias trackColor: root.cfg_trackColor
+        property alias textColor: root.cfg_textColor
+    }
+
+    Appearance {
+        id: previewAppearance
+        configuration: previewConfig
+        theme: root.Kirigami.Theme
+        migrate: false
+    }
+
     Kirigami.FormLayout {
+        QQC2.ComboBox {
+            id: colorModeCombo
+            Kirigami.FormData.label: i18n("Color source:")
+            model: [i18n("KDE theme"), i18n("Custom colors")]
+            currentIndex: root.cfg_colorMode < 0 ? (root.legacyCustomColors ? 1 : 0) : root.cfg_colorMode
+            onActivated: root.cfg_colorMode = currentIndex
+        }
+
+        KQC.ColorButton {
+            id: filledColorButton
+            Kirigami.FormData.label: i18n("Active orbit color:")
+            dialogTitle: i18n("Active orbit color")
+            showAlphaChannel: true
+            enabled: colorModeCombo.currentIndex === 1
+        }
+
+        KQC.ColorButton {
+            id: emptyColorButton
+            Kirigami.FormData.label: i18n("Inactive orbit color:")
+            dialogTitle: i18n("Inactive orbit color")
+            showAlphaChannel: true
+            enabled: colorModeCombo.currentIndex === 1
+        }
+
+        KQC.ColorButton {
+            id: trackColorButton
+            Kirigami.FormData.label: i18n("Orbit track color:")
+            dialogTitle: i18n("Orbit track color")
+            showAlphaChannel: true
+            enabled: colorModeCombo.currentIndex === 1
+        }
+
+        KQC.ColorButton {
+            id: textColorButton
+            Kirigami.FormData.label: i18n("Percentage text color:")
+            dialogTitle: i18n("Percentage text color")
+            showAlphaChannel: true
+            enabled: colorModeCombo.currentIndex === 1
+        }
+
         QQC2.ComboBox {
             id: styleCombo
             Kirigami.FormData.label: i18n("Orbit style:")
@@ -33,11 +107,15 @@ KCM.SimpleKCM {
             Kirigami.FormData.label: i18n("Panel preview at 50% CPU:")
             implicitWidth: Math.max(160, panelPreview.implicitWidth + 24)
             implicitHeight: 64
-            color: "#101D2B"
+            color: Kirigami.Theme.backgroundColor
             radius: 8
 
             CpuIndicator {
                 id: panelPreview
+                filledColor: previewAppearance.filledColor
+                emptyColor: previewAppearance.emptyColor
+                trackColor: previewAppearance.trackColor
+                textColor: previewAppearance.textColor
                 anchors.centerIn: parent
                 width: implicitWidth
                 height: 48
