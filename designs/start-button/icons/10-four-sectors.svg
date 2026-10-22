@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 10 — Четыре сектора</title>
+  <path d="M34.005 9.088 A23 23 0 0 1 54.912 29.995 L43.954 30.954 A12 12 0 0 0 33.046 20.046 Z" fill="#39B7E9" stroke="none"/><path d="M54.912 34.005 A23 23 0 0 1 34.005 54.912 L33.046 43.954 A12 12 0 0 0 43.954 33.046 Z" fill="#CCCCCC" stroke="none"/><path d="M29.995 54.912 A23 23 0 0 1 9.088 34.005 L20.046 33.046 A12 12 0 0 0 30.954 43.954 Z" fill="#CCCCCC" stroke="none"/><path d="M9.088 29.995 A23 23 0 0 1 29.995 9.088 L30.954 20.046 A12 12 0 0 0 20.046 30.954 Z" fill="#CCCCCC" stroke="none"/>
+</svg>

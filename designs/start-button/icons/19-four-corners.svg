@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 19 — Четыре уголка</title>
+  <path transform="rotate(0 32 32)" d="M11 26 V11 H26 V17 H17 V26 Z" fill="#39B7E9" stroke="none"/><path transform="rotate(90 32 32)" d="M11 26 V11 H26 V17 H17 V26 Z" fill="#CCCCCC" stroke="none"/><path transform="rotate(180 32 32)" d="M11 26 V11 H26 V17 H17 V26 Z" fill="#CCCCCC" stroke="none"/><path transform="rotate(270 32 32)" d="M11 26 V11 H26 V17 H17 V26 Z" fill="#CCCCCC" stroke="none"/>
+</svg>

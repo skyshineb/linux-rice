@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 15 — Спираль</title>
+  <path d="M53 11 H11 V53 H53 V23 H23 V41 H41 V32" stroke="#CCCCCC" stroke-width="2.8"/><path d="M41 32 H32" stroke="#39B7E9" stroke-width="2.8"/>
+</svg>

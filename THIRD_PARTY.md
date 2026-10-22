@@ -29,6 +29,19 @@ authored Python code, JSON palettes, Konsole settings, or wallpapers.
 
 Source: [KDE Breeze](https://invent.kde.org/plasma/breeze), supplied by `kde-style-breeze-data` 4:6.6.5-0ubuntu0.1 in the preparation environment. The installed package's copyright manifest assigns GPL-2-or-later to files without a more specific exception. Its general notices credit David Edmundson, Hugo Pereira Da Costa, Jonathan Riddell, Marco Martin, the Free Software Foundation, KDE contributors, and Rosetta Contributors / Canonical. The source color file does not carry an individual author notice. Orbital palette changes are copyright © 2026 Nikolay Skovorodin.
 
+## Astronomy Engine — MIT
+
+The offline lunar launcher bundles the unmodified Python module from
+[Astronomy Engine 2.1.19](https://github.com/cosinekitty/astronomy/releases/tag/v2.1.19),
+copyright © 2019–2023 Don Cross, under its upstream MIT license. Source:
+[`source/python/astronomy/astronomy.py`](https://raw.githubusercontent.com/cosinekitty/astronomy/v2.1.19/source/python/astronomy/astronomy.py).
+The source SHA-256 is
+`5f3a17c0b14290d084eeb0d29b00b3139cd1703a8d30fa5eb141398a24719261`;
+the installer verifies this before copying the runtime. The module is preserved
+at `scripts/vendor/astronomy.py`, with its original copyright notice and the
+license at [scripts/vendor/LICENSE.astronomy.txt](scripts/vendor/LICENSE.astronomy.txt).
+No downloads occur during installation or phase calculation.
+
 ## External dependencies
 
 | Dependency | Source and use |

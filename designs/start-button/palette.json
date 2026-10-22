@@ -1,0 +1,19 @@
+{
+  "name": "Orbital — current desktop snapshot",
+  "source_theme": "wallpaper-443f13e2eb17-dark-873893bb29",
+  "panel_height": 56,
+  "colors": {
+    "canvas": "#2A2A2A",
+    "panel": "#353535",
+    "window": "#2A2A2A",
+    "button": "#3F3F3F",
+    "selected": "#005978",
+    "text": "#CCCCCC",
+    "muted": "#A9A9A9",
+    "cyan": "#39B7E9",
+    "amber": "#E6B96A",
+    "red": "#FF7C6E",
+    "green": "#74C69D",
+    "violet": "#A9A3CB"
+  }
+}

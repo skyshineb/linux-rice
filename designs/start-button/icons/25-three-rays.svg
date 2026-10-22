@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 25 — Три луча</title>
+  <path d="M32.000 22.000 L32.000 7.000" stroke="#CCCCCC" stroke-width="4"/><path d="M40.660 37.000 L53.651 44.500" stroke="#CCCCCC" stroke-width="4"/><path d="M23.340 37.000 L10.349 44.500" stroke="#CCCCCC" stroke-width="4"/><circle cx="32.000" cy="32.000" r="4" fill="#39B7E9" stroke="none"/>
+</svg>

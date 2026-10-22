@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 26 — Звезда</title>
+  <path d="M32 6 L37 26 L58 32 L37 38 L32 58 L27 38 L6 32 L27 26 Z" fill="#CCCCCC" stroke="none"/><path d="M32 28 L36 32 L32 36 L28 32 Z" fill="#39B7E9" stroke="none"/>
+</svg>

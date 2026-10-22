@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 30 — Связь</title>
+  <g transform="rotate(-32 32 32)"><path d="M29 43 H19 A11 11 0 0 1 19 21 H29 A11 11 0 0 1 40 32" stroke="#CCCCCC" stroke-width="3"/><path d="M35 21 H45 A11 11 0 0 1 45 43 H35 A11 11 0 0 1 24 32" stroke="#39B7E9" stroke-width="3"/></g>
+</svg>

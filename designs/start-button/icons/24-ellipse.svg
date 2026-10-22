@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 24 — Эллипс</title>
+  <g transform="rotate(-28 32 32)"><ellipse cx="32" cy="32" rx="27" ry="13" stroke="#CCCCCC"/><path d="M57.372 36.446 A27 13 0 0 1 41.235 44.216" stroke="#39B7E9" stroke-width="3.2"/></g>
+</svg>

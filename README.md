@@ -18,6 +18,59 @@ The default desktop installs and adds **Orbital CPU** and **Orbital Memory**.
 **Orbital Battery** is optional. The widgets are independent Plasma applet packages
 and can be installed without applying the desktop theme.
 
+## Lunar application launcher
+
+The existing Kickoff launcher can use an Orbital Moon icon whose illuminated
+shape follows the real Moon. Calculations run locally with bundled Astronomy
+Engine 2.1.19; no network access, location lookup, pip installation, or PyQt runtime
+is needed. The north-up design lights the right side while waxing and the left
+while waning. The disc, accent arc, and faint new-Moon outline follow the active
+KDE palette, including generated Orbital schemes.
+
+Install and activate for the current user in a running Plasma session:
+
+```bash
+./scripts/orbital-moon install
+~/.local/bin/orbital-moon status
+```
+
+Installation selects the single Kickoff on the bottom panel and preserves its
+menu, favorites, shortcut, and original icon. The icon updates immediately,
+15 seconds after login, and every 15 minutes. A systemd path unit watches
+`kdeglobals` for immediate palette updates; the calendar timer catches missed
+updates after sleep and reacts to system clock changes. The units are named
+`orbital-moon.service`, `orbital-moon.timer`, and `orbital-moon.path` and are tied
+to the graphical session. Logs are available with
+`journalctl --user -u orbital-moon.service`.
+
+The self-contained installed copy lives under
+`${XDG_DATA_HOME:-~/.local/share}/orbital-moon-launcher/`; icon files live under
+the same data root in `orbital/moon-launcher/icons/`, with only the current and
+previous versions retained. State, including the original icon, lives under
+`${XDG_STATE_HOME:-~/.local/state}/orbital/moon-launcher/`. User units use
+`${XDG_CONFIG_HOME:-~/.config}/systemd/user/`. The installed command keeps working
+after moving or deleting this checkout. Run `install` again to update it.
+
+Selecting another icon manually pauses the automatic replacement; run `install`
+again to resume. Failed updates keep the last working icon and report the error
+in the service log. A preview can be rendered without changing the launcher:
+
+```bash
+./scripts/orbital-moon render --at 2026-10-22T12:00:00Z --output /tmp/moon.svg
+```
+
+To stop automatic updates and restore the original icon, run in a Plasma session:
+
+```bash
+~/.local/bin/orbital-moon uninstall
+```
+
+Removal preserves any icon selected manually after installation. Updates and
+removal refuse to replace unrelated or manually modified launcher/unit files.
+The static [Eclipse](assets/icons/orbital-start-eclipse.svg) and
+[Concentric](assets/icons/orbital-start-concentric.svg) icons remain available
+separately.
+
 ## Color schemes
 
 Orbital includes **Orbital Dark** (the original palette) and **Orbital Light**.

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Orbital Start 08 — Пересечение</title>
+  <ellipse cx="32" cy="32" rx="26" ry="12" transform="rotate(45 32 32)" stroke="#CCCCCC"/><ellipse cx="32" cy="32" rx="26" ry="12" transform="rotate(-45 32 32)" stroke="#39B7E9"/>
+</svg>
