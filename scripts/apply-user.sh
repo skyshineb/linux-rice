@@ -41,7 +41,7 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-for widget in org.orbital.cpu org.orbital.memory; do
+for widget in org.orbital.cpu org.orbital.memory org.orbital.disk; do
   if [[ -d "$HOME/.local/share/plasma/plasmoids/$widget" ]]; then
     kpackagetool6 --type Plasma/Applet --upgrade "$root/widgets/$widget"
   else
@@ -97,8 +97,8 @@ qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$lay
 bottom_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0])')"
 tray_applet_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);print(p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0].id)')"
 tray_id="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var t=p.widgets().filter(function(w){return w.type === "org.kde.plasma.systemtray"})[0];t.currentConfigGroup=[];print(t.readConfig("SystrayContainmentId"))')"
-order="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.cpu","org.orbital.memory","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
-order_pattern='^[0-9]+(;[0-9]+){7}$'
+order="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'var p=panelById(panelIds.filter(function(id){return panelById(id).location === "bottom"})[0]);var names=["org.kde.plasma.kickoff","org.kde.plasma.pager","org.kde.plasma.icontasks","org.kde.plasma.panelspacer","org.orbital.cpu","org.orbital.memory","org.orbital.disk","org.kde.plasma.systemtray","org.kde.plasma.digitalclock"];var ws=p.widgets();print(names.map(function(name){return ws.filter(function(w){return w.type===name})[0].id}).join(";"))')"
+order_pattern='^[0-9]+(;[0-9]+){8}$'
 [[ "$bottom_id" =~ ^[0-9]+$ && "$tray_applet_id" =~ ^[0-9]+$ && "$order" =~ $order_pattern ]]
 if [[ "$tray_id" =~ ^[0-9]+$ ]]; then
   tray_groups=(--group Containments --group "$tray_id" --group General)

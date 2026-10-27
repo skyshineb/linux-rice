@@ -257,6 +257,26 @@ class ThemeTests(unittest.TestCase):
         self.assertEqual(after, before)
         self.assertTrue(unrelated.exists())
 
+    def test_full_snapshot_removes_disk_installed_after_snapshot(self):
+        widget = self.manager.home / '.local/share/plasma/plasmoids/org.orbital.disk'
+        backup = snapshot.snapshot(self.manager, self.root / 'full-backups')
+        themes.write_text(widget / 'contents/ui/main.qml', 'new disk widget')
+        snapshot.restore(backup, self.manager)
+        self.assertFalse(widget.exists())
+
+    def test_full_snapshot_restores_disk_package_and_panel_configuration(self):
+        widget = self.manager.home / '.local/share/plasma/plasmoids/org.orbital.disk/contents/ui/main.qml'
+        panel = self.manager.home / '.config/plasma-org.kde.plasma.desktop-appletsrc'
+        configuration = '[General]\nmeterStyle=18\nvolumeId=data-uuid\nioScaleMBps=1200\n'
+        themes.write_text(widget, 'disk version one')
+        themes.write_text(panel, configuration)
+        backup = snapshot.snapshot(self.manager, self.root / 'full-backups')
+        themes.write_text(widget, 'disk version two')
+        themes.write_text(panel, '[General]\nmeterStyle=19\n')
+        snapshot.restore(backup, self.manager)
+        self.assertEqual(widget.read_text(), 'disk version one')
+        self.assertEqual(panel.read_text(), configuration)
+
     def test_restore_legacy_full_snapshot(self):
         backup = self.root / 'legacy-backup'
         path = '.config/kdeglobals'

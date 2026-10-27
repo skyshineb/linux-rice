@@ -27,6 +27,10 @@ var savedShowSwapGauge = null;
 var memoryColorKeys = ["filledColor", "emptyColor", "textColor",
                        "chipBodyColor", "chipOutlineColor", "swapColor"];
 var savedMemoryColors = {};
+var diskKeys = ["meterStyle", "volumeId", "meterScale", "horizontalPadding", "verticalPadding",
+                "ioScaleMBps", "animationsEnabled", "colorMode", "filledColor", "writeColor",
+                "emptyColor", "trackColor", "textColor", "surfaceColor", "warningColor"];
+var savedDiskSettings = {};
 var savedAppearance = {};
 var appearanceKeys = {
     "org.orbital.cpu": ["colorMode", "filledColor", "emptyColor", "trackColor", "textColor"],
@@ -71,6 +75,16 @@ for (var i = 0; i < existing.length; ++i) {
             var parsedMaxRpm = Number(rawMaxRpm);
             if (isFinite(parsedMaxRpm)) {
                 savedMaxRpm = Math.round(Math.max(0, Math.min(120, parsedMaxRpm)));
+            }
+        }
+    } else if (existing[i].type === "org.orbital.disk") {
+        existing[i].currentConfigGroup = ["General"];
+        for (var diskIndex = 0; diskIndex < diskKeys.length; ++diskIndex) {
+            var diskKey = diskKeys[diskIndex];
+            var diskValue = existing[i].readConfig(diskKey);
+            if (diskValue !== undefined && diskValue !== null
+                    && (String(diskValue) !== "" || diskKey === "volumeId")) {
+                savedDiskSettings[diskKey] = diskValue;
             }
         }
     } else if (existing[i].type === "org.orbital.memory") {
@@ -121,8 +135,10 @@ bottom.length = width;
 bottom.addWidget("org.kde.plasma.panelspacer");
 var cpu = bottom.addWidget("org.orbital.cpu");
 var memory = bottom.addWidget("org.orbital.memory");
-if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory") {
-    throw new Error("An Orbital CPU or Memory widget was not available");
+var disk = bottom.addWidget("org.orbital.disk");
+if (!cpu || cpu.type !== "org.orbital.cpu" || !memory || memory.type !== "org.orbital.memory"
+        || !disk || disk.type !== "org.orbital.disk") {
+    throw new Error("An Orbital CPU, Memory or Disk widget was not available");
 }
 var appearanceWidgets = [cpu, memory];
 for (var widgetIndex = 0; widgetIndex < appearanceWidgets.length; ++widgetIndex) {
@@ -171,6 +187,10 @@ for (var memoryColorIndex = 0; memoryColorIndex < memoryColorKeys.length; ++memo
         memory.writeConfig(memoryColorKey, savedMemoryColors[memoryColorKey]);
     }
 }
+disk.currentConfigGroup = ["General"];
+for (var diskKey in savedDiskSettings) {
+    disk.writeConfig(diskKey, savedDiskSettings[diskKey]);
+}
 var tray = bottom.addWidget("org.kde.plasma.systemtray");
 var clock = bottom.addWidget("org.kde.plasma.digitalclock");
 clock.currentConfigGroup = ["Appearance"];
@@ -180,4 +200,4 @@ clock.writeConfig("showDate", false);
 if (top) { top.remove(); }
 
 // Wallpaper and colors are applied separately by orbital-theme.
-print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", tray=" + tray.id);
+print("Orbital single panel applied: bottom=" + bottom.id + ", cpu=" + cpu.id + ", memory=" + memory.id + ", disk=" + disk.id + ", tray=" + tray.id);

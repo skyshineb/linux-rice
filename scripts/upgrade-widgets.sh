@@ -24,7 +24,7 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-widgets=(org.orbital.cpu org.orbital.memory)
+widgets=(org.orbital.cpu org.orbital.memory org.orbital.disk)
 if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.battery" ]]; then
   widgets+=(org.orbital.battery)
 fi

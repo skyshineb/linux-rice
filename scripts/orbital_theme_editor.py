@@ -101,7 +101,7 @@ class Editor(QObject):
                                   source_color_index=0, source_choice='index', prefer=None)
             self._image_label = None
         self._widget_defaults = {}
-        for widget in ('cpu', 'memory', 'battery'):
+        for widget in ('cpu', 'memory', 'battery', 'disk'):
             xml = ROOT / 'widgets' / f'org.orbital.{widget}' / 'contents/config/main.xml'
             entries = ET.parse(xml).findall('.//{*}entry')
             self._widget_defaults[widget] = {'colorMode': 0, **{

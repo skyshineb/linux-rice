@@ -2,7 +2,7 @@
 
 ## Orbital-authored material
 
-Copyright © 2026 Nikolay Skovorodin. The [MIT license](LICENSE) covers the original CPU and Memory packages, installation/development scripts, the palette editor's original SVG application icon, Konsole and Zsh settings, original SVG/PNG orbital wallpapers, documentation, and original elements in the preview images. Each CPU/Memory package contains its own copy of the license for standalone distribution.
+Copyright © 2026 Nikolay Skovorodin. The [MIT license](LICENSE) covers the original CPU, Memory, and Disk packages, installation/development scripts, the palette editor's original SVG application icon, Konsole and Zsh settings, original SVG/PNG orbital wallpapers, documentation, and original elements in the preview images. Each CPU/Memory/Disk package contains its own copy of the license for standalone distribution.
 
 The exceptions below retain their upstream licensing. The root MIT license does not replace those terms or license externally installed icons, fonts, KDE components, or application branding visible in the desktop screenshot.
 

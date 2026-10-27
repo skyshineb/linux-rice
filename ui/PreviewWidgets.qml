@@ -6,11 +6,16 @@ import org.kde.kirigami as Kirigami
 import "../widgets/org.orbital.cpu/contents/ui" as CPU
 import "../widgets/org.orbital.memory/contents/ui" as Memory
 import "../widgets/org.orbital.battery/contents/ui" as Battery
+import "../widgets/org.orbital.disk/contents/ui" as Disk
+import "../widgets/org.orbital.disk/contents/ui/DiskUtils.js" as DiskUtils
+import QtQuick.Controls as QQC2
 
 Rectangle {
     id: root
+    objectName: "orbitalWidgetsPreview"
     required property var colors
     required property var defaults
+    implicitHeight: content.implicitHeight + 40
     color: colors.panel
     radius: 10
     Kirigami.Theme.inherit: false
@@ -19,11 +24,14 @@ Rectangle {
     Kirigami.Theme.textColor: colors.text
     Kirigami.Theme.highlightColor: colors.selected
     Kirigami.Theme.neutralTextColor: colors.amber
+    Kirigami.Theme.negativeTextColor: colors.red
     CPU.Appearance { id: cpu; configuration: root.defaults.cpu; theme: root.Kirigami.Theme; migrate: false }
     Memory.Appearance { id: memory; configuration: root.defaults.memory; theme: root.Kirigami.Theme; migrate: false }
     Battery.Appearance { id: battery; configuration: root.defaults.battery; theme: root.Kirigami.Theme; migrate: false }
+    Disk.Appearance { id: disk; configuration: root.defaults.disk; theme: root.Kirigami.Theme }
 
     ColumnLayout {
+        id: content
         anchors.fill: parent; anchors.margins: 20; spacing: 16
         Text { text: "ПАНЕЛЬ ORBITAL"; color: root.colors.muted; font.family: "IBM Plex Mono"; font.pixelSize: 12 }
         RowLayout {
@@ -72,6 +80,32 @@ Rectangle {
                     }
                     Text { Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; text: ["Заряд 65%", "Заряд 15%"][parent.index]; color: root.colors.muted; font.pixelSize: 12 }
                 }
+            }
+        }
+        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: root.colors.button }
+        RowLayout {
+            Layout.fillWidth: true; spacing: 18
+            ColumnLayout {
+                Layout.fillWidth: true
+                Text { text: "DISK"; color: root.colors.muted; font.family: "IBM Plex Mono"; font.pixelSize: 12 }
+                QQC2.ComboBox {
+                    id: diskStyle
+                    objectName: "diskPreviewStyle"
+                    Layout.fillWidth: true
+                    model: DiskUtils.styleNames
+                    currentIndex: DiskUtils.styles.indexOf(19)
+                    Accessible.name: "Стиль диска"
+                }
+            }
+            Disk.DiskIndicator {
+                objectName: "diskPalettePreview"
+                Layout.preferredWidth: implicitWidth; Layout.preferredHeight: 72
+                meterStyle: DiskUtils.styles[diskStyle.currentIndex]
+                usedPercent: 64; readBytesPerSecond: 280000000; writeBytesPerSecond: 96000000
+                animationsEnabled: false
+                filledColor: disk.filledColor; writeColor: disk.writeColor
+                emptyColor: disk.emptyColor; trackColor: disk.trackColor
+                textColor: disk.textColor; surfaceColor: disk.surfaceColor; warningColor: disk.warningColor
             }
         }
         Item { Layout.fillHeight: true }

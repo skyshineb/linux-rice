@@ -10,11 +10,12 @@ A restrained mission-control look for KDE Plasma 6: dark navy surfaces, muted cy
 | --- | --- |
 | [Orbital CPU](widgets/org.orbital.cpu/) | Animated Classic, Constellation and Pulsar orbits, CPU usage, and temperature/frequency tooltips. |
 | [Orbital Memory](widgets/org.orbital.memory/) | Fan and Silicon RAM indicators with an optional Fan swap gauge. |
+| [Orbital Disk](widgets/org.orbital.disk/) | Nine space and read/write indicators, a selectable partition, and Terminal as the default style. |
 | [Orbital Battery](widgets/org.orbital.battery/) | A 20-cell charge grid with brightness, power profiles, and sleep inhibition controls. |
 | [Appearance assets](assets/) | Dark/light palettes, KDE/Konsole colors, wallpapers in two resolutions, a Konsole profile, and an Oh My Zsh prompt. |
 | [Installation scripts](scripts/) | Desktop setup, separate widget upgrades, snapshots, restore, and an optional SDDM override. |
 
-The default desktop installs and adds **Orbital CPU** and **Orbital Memory**.
+The default desktop installs and adds **Orbital CPU**, **Orbital Memory**, and **Orbital Disk**.
 **Orbital Battery** is optional. The widgets are independent Plasma applet packages
 and can be installed without applying the desktop theme.
 
@@ -227,7 +228,7 @@ For the full user theme, provide:
 - Oh My Zsh with an existing `~/.zshrc` containing a `ZSH_THEME=` assignment.
 - An existing bottom panel containing Application Launcher (Kickoff), Pager, and Icons-only Task Manager. Their configuration and pinned applications are preserved. Other widgets on that panel are replaced by the Orbital layout; an unrelated top panel is refused.
 
-CPU and Memory require KDE's `org.kde.ksysguard.sensors` QML module (`qml6-module-org-kde-ksysguard` on the checked system). Battery requires PowerDevil's battery/brightness modules and `Qt5Compat.GraphicalEffects` (`qml6-module-qt5compat-graphicaleffects`). Standard Plasma, Kirigami, and KDE settings QML modules must also be installed. PyQt6 is needed for the editor, asset regeneration, and preview rendering, not for installation or the other CLI commands.
+CPU, Memory, and Disk require KDE's `org.kde.ksysguard.sensors` QML module (`qml6-module-org-kde-ksysguard` on the checked system). Disk also uses `QtQuick.Shapes` (`qml6-module-qtquick-shapes`) and Plasma5Support's `soliddevice` data engine for mounted-volume discovery. Battery requires PowerDevil's battery/brightness modules and `Qt5Compat.GraphicalEffects` (`qml6-module-qt5compat-graphicaleffects`). Standard Plasma, Kirigami, and KDE settings QML modules must also be installed. PyQt6 is needed for the editor, asset regeneration, and preview rendering, not for installation or the other CLI commands.
 
 ## Apply the user theme
 
@@ -263,6 +264,7 @@ For a new installation of just the applets:
 ```bash
 kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.cpu
 kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.memory
+kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.disk
 ```
 
 To also install the optional Battery widget:
@@ -273,13 +275,15 @@ kpackagetool6 --type Plasma/Applet --install ./widgets/org.orbital.battery
 
 Then add them through Plasma's **Add Widgets** menu. These commands leave the theme and panel layout to you and do not create an Orbital snapshot.
 
-To upgrade CPU and Memory, plus Battery if it is already installed, without changing an existing panel layout:
+To install or upgrade CPU, Memory, and Disk, plus Battery if it is already installed, without changing an existing panel layout:
 
 ```bash
 ./scripts/upgrade-widgets.sh
 ```
 
 This script takes a snapshot, installs or upgrades each package, and restarts Plasma Shell once while preserving widget settings. For one applet, use `kpackagetool6 --type Plasma/Applet --upgrade` with that applet's directory.
+When upgrading a desktop that does not yet contain Disk, add **Orbital Disk** through
+Plasma's **Add Widgets** menu. The full installer adds it after Memory automatically.
 
 ## Widget settings
 
@@ -307,13 +311,71 @@ The **Copy KDE colors to custom palette** button takes a one-time copy, using th
 neutral color for swap, and selects custom mode. Reapplying preserves style, size,
 swap toggle, color source, and custom colors.
 
+### Disk
+
+![Nine disk designs with capacity endpoints, unavailable data, and panel-size previews](docs/images/disk.png)
+
+The default **19 · Terminal** style shows the selected partition, percentage used,
+capacity bar, and separate read/write indicators. Settings preserve the design IDs
+from the [HTML design gallery](designs/system-disk/index.html):
+
+| ID | Style | Capacity and activity |
+| --- | --- | --- |
+| 2 | Double contour | Outer capacity ring, inner combined transfer-rate arc, R/W lights. |
+| 4 | Spiral | Capacity along a square spiral, percentage and R/W lights below. |
+| 13 | Archive | Six layers filled from bottom to top, including a partial layer. |
+| 14 | Packets | Opposing read/write chevrons, percentage and capacity bar. |
+| 16 | Radar | Capacity arc and a scanning beam that rotates during I/O. |
+| 17 | Turbine | Eight capacity blades that rotate during I/O; the number stays still. |
+| 18 | Honeycomb | Nineteen capacity cells, percentage and R/W lights. |
+| 19 | Terminal | Compact partition label, large percentage, capacity bar and R/W marks. |
+| 20 | Three channels | C for capacity, R/W bars for read/write transfer rates. |
+
+**Partition** defaults to automatic detection of `/`. Select another mounted local
+filesystem to monitor it instead. Identity follows KDE's UUID-based sensor IDs;
+an unavailable selection stays selected and displays a dash until it returns.
+The widget does not mount devices. Snap loop devices, pseudo filesystems, and
+network mounts are excluded. A long mount label is elided; the full mount path
+and volume name remain in the tooltip.
+
+Capacity and per-partition read/write sensors update at most once per second.
+Hover for used/total and available decimal GB, read/write MB/s, and a low-space
+warning at 90% used. Amount sensors subscribe only while hovering. Unavailable
+readings show a dash; zero transfer rates represent idle. Click to open Plasma
+System Monitor. No shell polling, root privileges, Python runtime, S.M.A.R.T.,
+temperature collection, or additional background service is required.
+
+**I/O scale** defaults to **400 MB/s** and can be set to 1–100000 MB/s. The inner
+arc in style 2 uses `(read + write) / scale`; style 20 normalizes each R/W bar
+separately. Values above the scale fill the respective mark. These marks show
+transfer rates relative to the chosen scale, not the percentage of time the disk
+is busy. Read uses the accent color, write the neutral/amber color; low space
+changes only the capacity color.
+
+**Animate disk activity** is enabled by default and follows KDE's animation
+setting. The beam and turbine run at 4–30 RPM according to normalized activity;
+idle, hidden, and unavailable I/O stops their rotation. Disabling animation keeps
+active R/W indicators visible without pulsing. Only the chosen style is loaded.
+
+Set the relative size to 60–150% (100% by default), horizontal padding to 0–32 px,
+and vertical padding to 0–24 px. At 100%, the drawing is 44 px high in a 56 px
+panel, with a fixed slot that does not shift when values change. **KDE theme**
+follows live palette changes; **Custom colors** stores all seven editable colors.
+The settings preview uses fixed sample data, and the palette editor's Widgets
+tab can preview all nine native QML styles without subscribing to real sensors.
+
+Full-theme reapplication preserves Disk's style, partition, sizing, scale,
+animation toggle, and custom colors. Snapshots include the Disk package and panel
+settings; restoring a snapshot taken before installing Disk removes that package.
+The package's `preview.qml` renders the native gallery shown above.
+
 ### Battery
 
 ![Battery charge, hover, charging, and low-charge examples](docs/images/battery.png)
 
 The cyan 4×5 grid fills from bottom to top. Each solid cell represents a completed 5% of charge; all 20 cells light at 99%. While charging below 99%, the next empty cell pulses. The pulse stops at 99% or above or when charging stops.
 
-Hover for a frosted percentage badge; it also appears at 20% or below. Settings can show the percentage permanently, follow KDE colors, customize grid/badge colors, or copy current KDE colors into custom fields. The grid keeps a fixed panel width. Click for battery details, brightness, power profiles, and sleep inhibition controls, or scroll to adjust screen brightness. The stock battery icon remains available in tray overflow after the full theme is applied. Widget upgrades preserve Battery settings. Reapplying the full theme rebuilds the panel with CPU and Memory; add the optional Battery widget again afterward if needed.
+Hover for a frosted percentage badge; it also appears at 20% or below. Settings can show the percentage permanently, follow KDE colors, customize grid/badge colors, or copy current KDE colors into custom fields. The grid keeps a fixed panel width. Click for battery details, brightness, power profiles, and sleep inhibition controls, or scroll to adjust screen brightness. The stock battery icon remains available in tray overflow after the full theme is applied. Widget upgrades preserve Battery settings. Reapplying the full theme rebuilds the panel with CPU, Memory, and Disk; add the optional Battery widget again afterward if needed.
 
 ## Restore
 

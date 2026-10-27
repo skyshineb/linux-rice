@@ -133,7 +133,7 @@ ApplicationWindow {
                     }
                     ScrollView {
                         id: widgetsScroll; contentWidth: availableWidth; clip: true
-                        PreviewWidgets { width: widgetsScroll.availableWidth; height: Math.max(340, widgetsScroll.availableHeight); colors: editor.preview.colors; defaults: editor.widgetDefaults }
+                        PreviewWidgets { width: widgetsScroll.availableWidth; height: Math.max(implicitHeight, widgetsScroll.availableHeight); colors: editor.preview.colors; defaults: editor.widgetDefaults }
                     }
                     ScrollView {
                         id: terminalScroll; contentWidth: availableWidth; clip: true

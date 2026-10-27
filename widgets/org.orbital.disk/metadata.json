@@ -1,0 +1,16 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "org.orbital.disk",
+    "Name": "Orbital Disk",
+    "Name[ru]": "Диск Orbital",
+    "Description": "Disk space and read/write activity with nine switchable designs",
+    "Description[ru]": "Заполнение диска и активность чтения/записи с девятью вариантами оформления",
+    "Category": "System Information",
+    "Icon": "drive-harddisk",
+    "Version": "1.0.0",
+    "License": "MIT",
+    "Authors": [{ "Name": "Nikolay Skovorodin", "Website": "https://github.com/skyshineb" }]
+  },
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

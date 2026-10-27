@@ -249,6 +249,18 @@ class EditorTests(unittest.TestCase):
                     self.assertEqual(window.width(), 900)
                     self.assertEqual(window.height(), 640)
                     self.assertFalse(window.grabWindow().isNull())
+                    if tab == 1:
+                        selector = window.findChild(object, 'diskPreviewStyle')
+                        preview = window.findChild(object, 'diskPalettePreview')
+                        self.assertIsNotNone(selector)
+                        self.assertIsNotNone(preview)
+                        for index, style in enumerate((2, 4, 13, 14, 16, 17, 18, 19, 20)):
+                            selector.setProperty('currentIndex', index)
+                            self.app.processEvents()
+                            self.assertEqual(preview.property('meterStyle'), style)
+                            self.assertEqual(preview.property('filledColor').name(), self.editor.preview['colors']['cyan'].lower())
+                        content = window.findChild(object, 'orbitalWidgetsPreview')
+                        self.assertGreaterEqual(content.property('height'), content.property('implicitHeight'))
             self.assertEqual(warnings, [])
         finally:
             window.close()
