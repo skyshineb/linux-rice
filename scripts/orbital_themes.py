@@ -22,6 +22,8 @@ import tempfile
 from datetime import datetime
 from dataclasses import asdict, dataclass
 
+from orbital_user import require_user
+
 ROOT = Path(__file__).resolve().parent.parent
 COLOR_KEYS = ('canvas', 'panel', 'window', 'button', 'selected', 'text', 'muted',
               'cyan', 'amber', 'red', 'green', 'violet')
@@ -333,6 +335,7 @@ class Themes:
         return list(palettes.values())
 
     def preflight(self) -> None:
+        require_user()
         for command in ('qdbus6', 'plasma-apply-colorscheme', 'plasma-apply-desktoptheme',
                         'kwriteconfig6', 'systemctl'):
             if shutil.which(command) is None:
@@ -697,8 +700,9 @@ def main() -> int:
     restore = sub.add_parser('restore', help='Restore a color-switch snapshot')
     restore.add_argument('snapshot', nargs='?', type=Path)
     args = parser.parse_args()
-    themes = Themes()
     try:
+        require_user()
+        themes = Themes()
         if args.command == 'edit':
             try:
                 from orbital_theme_editor import launch

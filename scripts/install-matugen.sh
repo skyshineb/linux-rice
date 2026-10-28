@@ -13,6 +13,8 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown argument: $1" >&2; exit 1 ;;
   esac
 done
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+python3 "$script_dir/orbital_user.py"
 if [[ "$(uname -s)" != Linux || "$(uname -m)" != x86_64 ]]; then
   echo 'The pinned upstream binary supports Linux x86_64. Install Matugen 4.2.0 from source on other architectures.' >&2
   exit 1

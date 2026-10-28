@@ -4,6 +4,7 @@
 
 set -euo pipefail
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+python3 "$root/scripts/orbital_user.py"
 backup="${1:-$root/backups/latest}"
 systemctl --user stop plasma-plasmashell.service
 python3 "$root/scripts/snapshot.py" restore "$backup"

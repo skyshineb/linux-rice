@@ -16,6 +16,7 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown argument: $1" >&2; exit 1 ;;
   esac
 done
+python3 "$root/scripts/orbital_user.py"
 # Validate the selection before installing packages or taking a full snapshot.
 python3 "$root/scripts/orbital-theme" apply "${theme_args[@]}" --dry-run >/dev/null
 wallpaper_args=()

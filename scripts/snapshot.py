@@ -10,6 +10,7 @@ import sys
 from orbital_themes import Themes, copy_path, remove_path, is_theme_artifact
 from datetime import datetime
 from pathlib import Path
+from orbital_user import require_user
 
 ROOT = Path(__file__).resolve().parent.parent
 PATHS = [
@@ -107,6 +108,10 @@ def restore(target: Path, manager: Themes | None = None) -> None:
 
 
 if __name__ == "__main__":
+    try:
+        require_user()
+    except RuntimeError as error:
+        raise SystemExit(str(error))
     if sys.argv[1:] == ["save"]:
         snapshot()
     elif len(sys.argv) == 3 and sys.argv[1] == "restore":

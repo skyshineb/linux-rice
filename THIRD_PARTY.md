@@ -44,6 +44,23 @@ No downloads occur during installation or phase calculation.
 
 ## External dependencies
 
+### Palette screenshot — Scarlet Tree
+
+`docs/images/theme-editor.png` contains **Scarlet Tree** by **axo1otl**, from
+[KDE Plasma Workspace Wallpapers](https://github.com/KDE/plasma-workspace-wallpapers/tree/master/ScarletTree).
+The [upstream metadata](https://github.com/KDE/plasma-workspace-wallpapers/blob/master/ScarletTree/metadata.json)
+specifies [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+The screenshot is also distributed under CC-BY-SA-4.0: the image is scaled into
+the editor's source thumbnail, alongside colors generated from it with Matugen.
+The full source wallpaper is not bundled as an Orbital asset. The screenshot
+does not change the licenses of the application code or other preview images.
+
+Reproduce with `python3 scripts/render-docs.py`, using the system-installed
+`/usr/share/wallpapers/ScarletTree/contents/images/5120x2880.png`, or provide the
+upstream image through `--wallpaper PATH`.
+
+### Runtime and appearance dependencies
+
 | Dependency | Source and use |
 | --- | --- |
 | Tela Circle Blue | [Official Tela Circle project](https://github.com/vinceliuice/Tela-circle-icon-theme), by vinceliuice and contributors. Downloaded separately by the icon installer at commit `ee3cf47bcb05c3d99a0860b54254d2ff3d1d2c69`; icon files are not bundled here. Their upstream terms are not replaced by the Orbital license. |

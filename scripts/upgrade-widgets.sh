@@ -5,6 +5,25 @@
 set -euo pipefail
 
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ "${1:-}" == --help || "${1:-}" == -h ]]; then
+  echo 'Usage: upgrade-widgets.sh [cpu|memory|disk|battery ...]'
+  exit 0
+fi
+widgets=()
+if [[ $# -eq 0 ]]; then
+  widgets=(org.orbital.cpu org.orbital.memory org.orbital.disk)
+  if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.battery" ]]; then
+    widgets+=(org.orbital.battery)
+  fi
+else
+  for widget in "$@"; do
+    case "$widget" in
+      cpu|memory|disk|battery) widgets+=("org.orbital.$widget") ;;
+      *) echo "Unknown widget: $widget. Choose cpu, memory, disk or battery." >&2; exit 1 ;;
+    esac
+  done
+fi
+python3 "$root/scripts/orbital_user.py"
 if ! qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript 'print("ready")' >/dev/null; then
   echo 'A running Plasma 6 session is required.' >&2
   exit 1
@@ -24,10 +43,6 @@ restore_on_error() {
 }
 trap restore_on_error ERR
 
-widgets=(org.orbital.cpu org.orbital.memory org.orbital.disk)
-if [[ -d "$HOME/.local/share/plasma/plasmoids/org.orbital.battery" ]]; then
-  widgets+=(org.orbital.battery)
-fi
 for widget in "${widgets[@]}"; do
   if [[ -d "$HOME/.local/share/plasma/plasmoids/$widget" ]]; then
     kpackagetool6 --type Plasma/Applet --upgrade "$root/widgets/$widget"

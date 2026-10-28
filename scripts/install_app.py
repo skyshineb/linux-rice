@@ -16,6 +16,8 @@ import subprocess
 import sys
 import tempfile
 
+from orbital_user import require_user
+
 ROOT = Path(__file__).resolve().parent.parent
 APP_ID = 'org.orbital.ThemeEditor'
 MANIFEST = '.orbital-install.json'
@@ -152,7 +154,7 @@ def launchers(paths):
 
 
 def copy_bundle(destination):
-    for directory in ('ui', 'assets/palettes', 'assets/kde', 'assets/konsole', 'LICENSES', 'widgets'):
+    for directory in ('ui', 'assets/palettes', 'assets/kde', 'assets/konsole', 'LICENSES', 'widgets', 'docs'):
         shutil.copytree(ROOT / directory, destination / directory,
                         ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     for name in ('LICENSE', 'THIRD_PARTY.md', 'README.md'):
@@ -160,7 +162,7 @@ def copy_bundle(destination):
     scripts = destination / 'scripts'
     scripts.mkdir()
     for name in ('orbital-theme', 'orbital_themes.py', 'orbital_theme_editor.py',
-                 'install-app.sh', 'install_app.py', 'install-matugen.sh'):
+                 'install-app.sh', 'install_app.py', 'install-matugen.sh', 'orbital_user.py'):
         shutil.copy2(ROOT / 'scripts' / name, scripts / name)
     (destination / 'assets/icons').mkdir()
     shutil.copy2(ROOT / 'assets/icons' / f'{APP_ID}.svg', destination / 'assets/icons' / f'{APP_ID}.svg')
@@ -225,6 +227,7 @@ def refresh_menu(desktop, kde=True):
 
 
 def install(paths):
+    require_user()
     bundle, command, desktop, _ = paths
     check_ownership(paths)
     files = launchers(paths)
@@ -271,6 +274,7 @@ def main(argv=None):
     if sys.version_info < (3, 10):
         parser.exit(1, 'Orbital requires Python 3.10 or newer.\n')
     try:
+        require_user()
         paths = locations(args.prefix)
         if args.uninstall:
             check_ownership(paths)

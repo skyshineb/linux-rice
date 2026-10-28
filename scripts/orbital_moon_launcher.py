@@ -21,6 +21,7 @@ import sys
 import tempfile
 
 from orbital_moon import moon_state, moon_svg, theme_colors
+from orbital_user import require_user
 
 SOURCE = Path(__file__).resolve().parent
 APP_ID = 'org.orbital.MoonLauncher'
@@ -197,6 +198,7 @@ def update_locked(paths, force=False):
 
 
 def update(paths):
+    require_user()
     with locked(paths):
         return update_locked(paths)
 
@@ -339,6 +341,7 @@ def prepare_file(target, contents, mode):
 
 
 def install(paths):
+    require_user()
     check_ownership(paths)
     for executable in ('qdbus6', 'systemctl'):
         if shutil.which(executable) is None:
@@ -365,7 +368,7 @@ def install(paths):
         staged = Path(temporary) / 'bundle'
         scripts = staged / 'scripts'
         scripts.mkdir(parents=True)
-        for name in ('orbital-moon', 'orbital_moon.py', 'orbital_moon_launcher.py'):
+        for name in ('orbital-moon', 'orbital_moon.py', 'orbital_moon_launcher.py', 'orbital_user.py'):
             shutil.copy2(SOURCE / name, scripts / name)
         shutil.copytree(SOURCE / 'vendor', scripts / 'vendor',
                         ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
@@ -404,6 +407,7 @@ def install(paths):
 
 
 def uninstall(paths):
+    require_user()
     check_ownership(paths)
     if not paths.bundle.exists() and not paths.state.exists():
         return
@@ -456,8 +460,9 @@ def main(argv=None):
     render.add_argument('--at', help='ISO 8601 date/time including timezone; defaults to now')
     render.add_argument('--output', required=True, type=Path)
     args = parser.parse_args(argv)
-    paths = Locations.current()
     try:
+        require_user()
+        paths = Locations.current()
         if args.command == 'render':
             moment = datetime.fromisoformat(args.at.replace('Z', '+00:00')) if args.at else None
             moon = moon_state(moment)

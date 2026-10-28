@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 set -euo pipefail
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+python3 "$script_dir/orbital_user.py"
 # Pinned official Tela Circle source, reviewed for this setup.
 source_url='https://github.com/vinceliuice/Tela-circle-icon-theme.git'
 source_commit='ee3cf47bcb05c3d99a0860b54254d2ff3d1d2c69'
